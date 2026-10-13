@@ -4,6 +4,3 @@ Exact variables: prog.comf, math.comf, stat.comf, courses
 
 2. Does taking more classes mean you have more areas of interest?
 
-
-
-
