@@ -3,3 +3,33 @@ title: "Question_2_Lawrence"
 output: html_document
 ---
 
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+setwd('/Users/lawrencehuynh/PSTAT 197A/PSTAT174-Module0-Class-Survey-Team7')
+
+(background <- 
+  read.csv('data/background-clean.csv'))
+
+(interest <- 
+  read.csv('data/interest-clean.csv'))
+
+joint <- background %>%
+  inner_join(interest, by = "response_id") %>%
+  mutate(
+    num_areas = str_count(areas, ",") + 1L
+  )
+
+```
+
+```{r}
+ggplot(joint, aes(x = num_areas)) +
+  geom_bar() +
+  labs(x = "Number of Areas of Interest", y = "Count") +
+  scale_x_continuous(breaks = seq(1, 13, by = 1)) +
+  scale_y_continuous(breaks = seq(1, 10, by = 2))
+```
+
