@@ -1,0 +1,52 @@
+---
+title: "Initial Code"
+output: html_document
+date: "2026-10-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning = FALSE}
+library(dplyr)
+```
+
+```{r}
+# reads background-clean data csv
+
+background <- 
+  read.csv('~/Desktop/Pstat 197A/module0-class-survey-team7/data/background-clean.csv')
+
+interest <- 
+  read.csv('~/Desktop/Pstat 197A/module0-class-survey-team7/data/interest-clean.csv')
+```
+
+```{r}
+background
+```
+
+```{r}
+interest
+```
+
+
+```{r}
+combined <- interest %>% inner_join(background, by = "response_id")
+
+combined <- combined[c("courses", "areas")]
+```
+
+
+```{r}
+combined
+```
+
+```{r}
+non_mandatory <- c("PSTAT 120", "CS 9", "PSTAT 131", "PSTAT 122", "PSTAT 126")
+```
+
+```{r}
+combined
+```
+
