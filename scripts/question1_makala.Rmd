@@ -3,22 +3,31 @@ title: "question1_makala"
 output: html_document
 ---
 
-# Module 0 Question 1
+## Module 0 Question 1
+# Task: Predicting student comfort with statistics using class experience
+# Response: stat.comf
+# Predictors: courses (PSTAT 115, PSTAT 160, PSTAT 171, PSTAT 175)
 
 ```{r}
 # load packages
 library(tidyverse)
+library(dplyr)
 ```
 
 ```{r}
-# Load background data
-class_data <- read_csv("../data/background-clean.csv")
+# Load data and select variables of interest
+class_data <- read_csv("../data/background-clean.csv") %>% 
+  select(response_id, stat.comf, courses)
 head(class_data)
 ```
-
 ```{r}
-# Task: Predicting student comfort with statistics using class experience
-# Response: stat.comf
-# Predictors: courses (PSTAT 115, PSTAT 160, PSTAT 171, PSTAT 175)
+class_data <- class_data %>% 
+  mutate(
+    pstat_115 = if_else(str_detect(courses, 'PSTAT 115'),'Yes', 'No'),
+    pstat_160 = if_else(str_detect(courses, 'PSTAT 160'), 'Yes', 'No'),
+    pstat_171 = if_else(str_detect(courses, 'PSTAT 171'), 'Yes', 'No'),
+    pstat_175 = if_else(str_detect(courses, 'PSTAT 175'), 'Yes', 'No')
+    )
+head(class_data)
 
 ```
