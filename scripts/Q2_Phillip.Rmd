@@ -30,9 +30,6 @@ combined <- combined[c("courses", "areas")]
 combined
 ```
 
-```{r}
-combined[1,1]
-```
 
 ```{r}
 # list of mandatory courses
@@ -42,27 +39,26 @@ mandatory <- c("PSTAT 120", "CS 9", "PSTAT 122", "PSTAT 126")
 
 ```{r}
 combined %>% 
+  
+  # separates the string containing the list of courses into each course code
+  # counts number of courses taken that were not in our list of mandatory courses
   mutate(non_mandatory = sum(!(strsplit(courses, 
                                 split = ", ")[[1]] %in% mandatory)), 
                                 .by = "courses") %>%
+  
+  # separates the string containing the list of areas of interest by the commas
+  # counts the number of areas of interest
+  # some areas of interest have ", generally" attached to the end
+  # accidentally counts generally as an area since it comes after comma
+  # counts the number of "generally" and subtracts from the original count
   mutate(num_areas = length(
-    strsplit(areas[[1]], split = ", ")[[1]]), .by = areas)
+    strsplit(areas[[1]], split = ", ")[[1]]) - 
+      sum(strsplit(areas[[1]], split = ", ")[[1]] == "generally"), 
+    .by = areas) %>%
+  
+  # only keeps the counts of non-mandatory courses and areas of interest
+  select(non_mandatory, num_areas)
 ```
-
-```{r}
-length(strsplit(combined["areas"][[1]], split = ", ")[[1]])
-```
-
-```{r}
-apply(strsplit(combined["areas"][[1]], split = ", "), 1, n)
-```
-
-```{r}
-
-```
-
-
-
 
 
 
