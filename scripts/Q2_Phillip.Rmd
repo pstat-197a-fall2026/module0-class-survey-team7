@@ -31,17 +31,35 @@ combined
 ```
 
 ```{r}
-# list of mandatory courses
-
-mandatory <- c("PSTAT 120", "CS 9", "PSTAT 131", "PSTAT 122", "PSTAT 126")
-
-combined %>% 
-  mutate(non_mandatory = sum(!(courses %in% mandatory)), .by = "courses")
+combined[1,1]
 ```
 
+```{r}
+# list of mandatory courses
 
+mandatory <- c("PSTAT 120", "CS 9", "PSTAT 122", "PSTAT 126")
+```
 
+```{r}
+combined %>% 
+  mutate(non_mandatory = sum(!(strsplit(courses, 
+                                split = ", ")[[1]] %in% mandatory)), 
+                                .by = "courses") %>%
+  mutate(num_areas = length(
+    strsplit(areas[[1]], split = ", ")[[1]]), .by = areas)
+```
 
+```{r}
+length(strsplit(combined["areas"][[1]], split = ", ")[[1]])
+```
+
+```{r}
+apply(strsplit(combined["areas"][[1]], split = ", "), 1, n)
+```
+
+```{r}
+
+```
 
 
 
