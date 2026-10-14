@@ -3,3 +3,6 @@ title: "anna_question1"
 output: html_document
 ---
 
+```{r}
+library(tidyverse)
+``
