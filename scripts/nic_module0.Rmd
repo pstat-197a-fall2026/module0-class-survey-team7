@@ -15,14 +15,19 @@ background <- read_csv('data/background-clean.csv', show_col_types = FALSE)
 interest <- read_csv('data/interest-clean.csv', show_col_types = FALSE)
 metadata <- read_csv('data/survey-metadata.csv', show_col_types = FALSE)
 
+mandatory <- c("PSTAT 120", "CS 9", "PSTAT 131", "PSTAT 122", "PSTAT 126")
+
 joint <- background %>%
   inner_join(interest, by = "response_id") %>%
   mutate(
-    num_areas = str_count(areas, ",") + 1L
+     num_areas = str_count(areas, ",") + 1L,
+    non_mandatory_courses = courses %>%
+      str_split(",\\s*") %>%
+      map_chr(~ toString(setdiff(.x[.x != ""], mandatory))),
+      num_non_mandatory = str_count(non_mandatory_courses, ",") + 1L
   )
 
 
-
-nrow(joint)
+joint
 ```
 
