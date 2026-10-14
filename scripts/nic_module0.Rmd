@@ -1,0 +1,28 @@
+---
+title: "nic_module0"
+output: html_document
+date: "2026-10-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+background <- read_csv('data/background-clean.csv', show_col_types = FALSE)
+interest <- read_csv('data/interest-clean.csv', show_col_types = FALSE)
+metadata <- read_csv('data/survey-metadata.csv', show_col_types = FALSE)
+
+joint <- background %>%
+  inner_join(interest, by = "response_id") %>%
+  mutate(
+    num_areas = str_count(areas, ",") + 1L
+  )
+
+
+
+nrow(joint)
+```
+
