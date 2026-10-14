@@ -3,4 +3,22 @@ title: "question1_makala"
 output: html_document
 ---
 
-hey
+# Module 0 Question 1
+
+```{r}
+# load packages
+library(tidyverse)
+```
+
+```{r}
+# Load background data
+class_data <- read_csv("../data/background-clean.csv")
+head(class_data)
+```
+
+```{r}
+# Task: Predicting student comfort with statistics using class experience
+# Response: stat.comf
+# Predictors: courses (PSTAT 115, PSTAT 160, PSTAT 171, PSTAT 175)
+
+```
