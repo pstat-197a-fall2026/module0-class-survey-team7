@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, warning = FALSE}
 library(dplyr)
+library(ggplot2)
 ```
 
 ```{r}
@@ -38,7 +39,7 @@ mandatory <- c("PSTAT 120", "CS 9", "PSTAT 122", "PSTAT 126")
 ```
 
 ```{r}
-combined %>% 
+data <- combined %>% 
   
   # separates the string containing the list of courses into each course code
   # counts number of courses taken that were not in our list of mandatory courses
@@ -58,10 +59,21 @@ combined %>%
   
   # only keeps the counts of non-mandatory courses and areas of interest
   select(non_mandatory, num_areas)
+
+head(data)
 ```
 
+```{r}
+ggplot(data, aes(non_mandatory)) + geom_bar() + theme_minimal() + 
+  xlab("Number of Non-Mandatory Course Taken") 
+ggplot(data, aes(num_areas)) + geom_bar() + theme_minimal() +
+  xlab("Number of Areas of Interest")
+```
 
-
+```{r}
+mlr <- lm(num_areas ~ non_mandatory, data = data)
+summary(mlr)
+```
 
 
 
