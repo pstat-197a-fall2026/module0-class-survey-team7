@@ -46,7 +46,4 @@ combined
 non_mandatory <- c("PSTAT 120", "CS 9", "PSTAT 131", "PSTAT 122", "PSTAT 126")
 ```
 
-```{r}
-combined
-```
 
