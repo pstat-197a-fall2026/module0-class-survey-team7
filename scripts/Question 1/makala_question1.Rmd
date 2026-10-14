@@ -3,3 +3,8 @@ title: "makala_question1"
 output: html_document
 ---
 
+```{r}
+# Load packages
+library(tidyverse)
+library(tidyr)
+```
