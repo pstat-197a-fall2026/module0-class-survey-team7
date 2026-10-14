@@ -23,27 +23,34 @@ interest <-
 ```
 
 ```{r}
-background
-```
-
-```{r}
-interest
-```
-
-
-```{r}
 combined <- interest %>% inner_join(background, by = "response_id")
 
 combined <- combined[c("courses", "areas")]
-```
 
-
-```{r}
 combined
 ```
 
 ```{r}
-non_mandatory <- c("PSTAT 120", "CS 9", "PSTAT 131", "PSTAT 122", "PSTAT 126")
+# list of mandatory courses
+
+mandatory <- c("PSTAT 120", "CS 9", "PSTAT 131", "PSTAT 122", "PSTAT 126")
+
+combined %>% 
+  mutate(non_mandatory = sum(!(courses %in% mandatory)), .by = "courses")
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
