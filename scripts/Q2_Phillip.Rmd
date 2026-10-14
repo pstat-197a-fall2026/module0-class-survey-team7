@@ -71,7 +71,7 @@ ggplot(data, aes(num_areas)) + geom_bar() + theme_minimal() +
 ```
 
 ```{r}
-mlr <- lm(num_areas ~ non_mandatory, data = data)
+lr <- lm(num_areas ~ non_mandatory, data = data)
 summary(mlr)
 ```
 
