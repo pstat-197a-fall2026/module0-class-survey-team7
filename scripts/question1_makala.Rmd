@@ -21,13 +21,35 @@ class_data <- read_csv("../data/background-clean.csv") %>%
 head(class_data)
 ```
 ```{r}
+# Creating new columns corresponding to classes of interest
 class_data <- class_data %>% 
   mutate(
-    pstat_115 = if_else(str_detect(courses, 'PSTAT 115'),'Yes', 'No'),
-    pstat_160 = if_else(str_detect(courses, 'PSTAT 160'), 'Yes', 'No'),
-    pstat_171 = if_else(str_detect(courses, 'PSTAT 171'), 'Yes', 'No'),
-    pstat_175 = if_else(str_detect(courses, 'PSTAT 175'), 'Yes', 'No')
+    pstat_115 = if_else(str_detect(courses, 'PSTAT 115'),1, 0),
+    pstat_160 = if_else(str_detect(courses, 'PSTAT 160'), 1, 0),
+    pstat_174 = if_else(str_detect(courses, 'PSTAT 174'), 1, 0),
+    pstat_175 = if_else(str_detect(courses, 'PSTAT 175'), 1, 0)
     )
 head(class_data)
+```
+```{r}
+# Summarize class data
+class_totals <- class_data %>% summarize(across(c(pstat_115, pstat_160,
+                                                pstat_174, pstat_175), sum)) %>% 
+                pivot_longer(cols=everything(),
+                             names_to = "course",
+                             values_to = "total")
+  
+# Plot class totals
+class_barplot <- class_totals %>% ggplot(aes(x=course, y=total)) +
+  geom_col(fill = "#005A87") +
+  labs(title = "Students Per Upper Division PSTAT Courses",
+       x = "Course",
+       y = "Total Students")
+  theme_light()
+class_barplot
+```
+```{r}
+# Summarize Student Comfort
+
 
 ```
