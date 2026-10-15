@@ -18,13 +18,17 @@ library(fastDummies)
 
 ```
 
-## 
+## Loading background data
 
 ```{r}
 background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
 
 tibble(background)
 ```
+
+### Dummy variable coding of programming classes
+
+Selected classes: CS5, CS9, PSTAT100, PSTAT131
 
 ```{r}
 programming_classes <- background %>% 
@@ -49,6 +53,8 @@ head(programming_comf_classes)
 
 ```
 
+Correlation Matrix for programming classes taken and reported programming proficiency
+
 ```{r}
 programming_prof_classes %>% 
   select(is.numeric) %>% 
@@ -57,6 +63,8 @@ programming_prof_classes %>%
            method = 'color')
 
 ```
+
+Correlation Matrix for programming classes taken and reported programming comfortability
 
 ```{r}
 programming_comf_classes %>% 
