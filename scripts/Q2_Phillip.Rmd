@@ -1,0 +1,85 @@
+---
+title: "Initial Code"
+output: html_document
+date: "2026-10-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning = FALSE}
+library(dplyr)
+library(ggplot2)
+library(GGally)
+```
+
+```{r}
+# reads background-clean data csv
+
+background <- 
+  read.csv('~/Desktop/Pstat 197A/module0-class-survey-team7/data/background-clean.csv')
+
+interest <- 
+  read.csv('~/Desktop/Pstat 197A/module0-class-survey-team7/data/interest-clean.csv')
+```
+
+```{r}
+combined <- interest %>% inner_join(background, by = "response_id")
+
+combined <- combined[c("courses", "areas")]
+
+combined
+```
+
+
+```{r}
+# list of mandatory courses
+
+mandatory <- c("PSTAT 120", "CS 9", "PSTAT 122", "PSTAT 126", "CS 16")
+```
+
+```{r}
+data <- combined %>% 
+  
+  # separates the string containing the list of courses into each course code
+  # counts number of courses taken that were not in our list of mandatory courses
+  mutate(non_mandatory = sum(!(strsplit(courses, 
+                                split = ", ")[[1]] %in% mandatory)), 
+                                .by = "courses") %>%
+  
+  # separates the string containing the list of areas of interest by the commas
+  # counts the number of areas of interest
+  # some areas of interest have ", generally" attached to the end
+  # accidentally counts generally as an area since it comes after comma
+  # counts the number of "generally" and subtracts from the original count
+  mutate(num_areas = length(
+    strsplit(areas[[1]], split = ", ")[[1]]) - 
+      sum(strsplit(areas[[1]], split = ", ")[[1]] == "generally"), 
+    .by = areas) %>%
+  
+  # only keeps the counts of non-mandatory courses and areas of interest
+  select(non_mandatory, num_areas)
+
+head(data)
+```
+
+```{r}
+ggplot(data, aes(non_mandatory)) + geom_bar() + theme_minimal() + 
+  labs(x = "Number of Non-Mandatory Course Taken", title = "Histogram of Courses")
+ggplot(data, aes(num_areas)) + geom_bar() + theme_minimal() +
+  labs(x = "Number of Areas of Interest", title = "Histogram of Areas of Interest")
+```
+
+```{r}
+ggpairs(data, progress = F)
+```
+
+
+```{r}
+lr <- lm(num_areas ~ non_mandatory, data = data)
+summary(lr)
+```
+
+
+
