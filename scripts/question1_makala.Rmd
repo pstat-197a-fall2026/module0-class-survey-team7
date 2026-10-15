@@ -4,20 +4,22 @@ output: html_document
 ---
 
 ## Module 0 Question 1
-# Task: Predicting student comfort with statistics using class experience
-# Response: stat.comf
-# Predictors: courses (PSTAT 115, PSTAT 160, PSTAT 171, PSTAT 175)
+# Data Cleaning and EDA
+Task: Predicting student comfort with statistics using class experience
+Response: stat.comf
+Predictors: courses (PSTAT 115, PSTAT 160, PSTAT 171, PSTAT 175)
 
 ```{r}
 # load packages
 library(tidyverse)
 library(dplyr)
+library(tidymodels)
 ```
 
 ```{r}
 # Load data and select variables of interest
 class_data <- read_csv('../data/background-clean.csv') %>% 
-  select(response_id, stat.comf, courses)
+  select(stat.comf, courses)
 head(class_data)
 ```
 ```{r}
@@ -33,7 +35,8 @@ class_data <- class_data %>%
     pstat_160 = if_else(str_detect(courses, 'PSTAT 160'), 1, 0),
     pstat_174 = if_else(str_detect(courses, 'PSTAT 174'), 1, 0),
     pstat_175 = if_else(str_detect(courses, 'PSTAT 175'), 1, 0)
-    )
+    ) %>% 
+  select(-courses)
 head(class_data)
 ```
 ```{r}
@@ -72,8 +75,44 @@ comfort_totals
 
 From this plot and the comfort totals, we can see that over half the students who provided their survey data reported they have 4/5 comfortability with statistics. Over a quarter of the students reported a comfortability of 5/5, while 9 students reported a comfortability of 3/5.
 
+## Building Model
 ```{r}
-# Building model
+# Split data
+class_split <- initial_split(class_data, prop = 0.80, strata = stat.comf)
+class_train <- training(class_split)
+class_test <- testing(class_split)
+class_folds <- vfold_cv(class_train, v = 5, strata = stat.comf)
 
+# Check counts
+nrow(class_train)
+nrow(class_test)
 
+```
+39 observations in the training set, 12 in the testing set!
+
+# Linear Regression Model
+```{r}
+# Create recipe
+class_recipe <- recipe(stat.comf ~ pstat_115 + pstat_160 + 
+                                   pstat_174 + pstat_175, 
+                         data = class_train) 
+
+# Model
+linear_model <- linear_reg() %>%
+  set_engine("lm") %>%
+  set_mode("regression")
+
+# Workflow
+linear_wflow <- workflow() %>%
+  add_model(linear_model) %>%
+  add_recipe(class_recipe)
+
+# Cross-Validation
+linear_fit <- fit_resamples(linear_wflow, resamples = class_folds,
+                            metrics = metric_set(rmse, rsq, mae))
+```
+
+```{r}
+# Evaluate results
+collect_metrics(linear_fit)
 ```
