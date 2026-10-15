@@ -101,6 +101,7 @@ programming_prof_recipe <- recipe(prog.prof_adv ~ ., data = programming_prof_tra
 
 ```
 
+Comfortability Model
 
 ```{r}
 programming_comf_lm_model <- linear_reg() %>% 
@@ -118,6 +119,18 @@ programming_comf_lm_fit %>%
 
 ```
 
+From the report, we can see that the selection of classes does not do a great job at predicting an individual's level of programming comfortability.
+
+
+
+
+
+
+
+
+Advanced Proficiency Model
+
+
 ```{r}
 programming_prof_lm_model <- linear_reg() %>% 
   set_engine("lm")
@@ -134,6 +147,8 @@ programming_prof_lm_fit %>%
 
 ```
 
+
+Looking at these metrics, we can see that reporting taking CS9 has a significant 
 
 
 
