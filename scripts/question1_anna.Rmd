@@ -3,3 +3,68 @@ title: "question1_anna"
 output: html_document
 ---
 
+```{r, echo = FALSE}
+
+library(tidyverse)
+library(broom)
+library(dplyr)
+
+```
+
+
+
+```{r}
+
+
+background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
+
+tibble(background)
+```
+
+```{r}
+programming_classes <- background %>%
+  
+  mutate(cs9 = if_else(any("CS 9" %in% courses, na.rm = TRUE), 1, 0)) %>%
+  ungroup()
+
+
+```
+
+
+
+```{r}
+
+courses <- background %>%
+  select(courses) %>%
+  pivot_wider()
+
+  
+
+head(courses)
+
+
+
+courses <- unlist(strsplit(mystring, split = ", "))
+
+programming_classes <- background %>%
+  mutate(cs9 = if_else(any("CS 9" %in% courses, na.rm = TRUE), 1, 0)) %>%
+  ungroup()
+
+?if_else
+
+
+head(programming_classes)
+  
+  
+  
+  mutate(after_2k = if_else(year <= 2000, 0, 1)) %>% 
+  select(after_2k, year, everything()) %>% 
+  head()
+
+
+```
+
+
+
+
+
