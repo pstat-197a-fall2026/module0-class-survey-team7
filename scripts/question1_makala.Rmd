@@ -116,3 +116,5 @@ linear_fit <- fit_resamples(linear_wflow, resamples = class_folds,
 # Evaluate results
 collect_metrics(linear_fit)
 ```
+
+From these metrics, we can see that our model didn't do a very good job at predicting student comfortability with statistics. The RMSE is is about 0.765. This value is pretty high, which means that the model's predicted values were far from the actual values. The R-squared value is also low, about 0.13. This means that only 13% of the variance in student comfortability can be explained by our independent variables (our classes of interest). 
