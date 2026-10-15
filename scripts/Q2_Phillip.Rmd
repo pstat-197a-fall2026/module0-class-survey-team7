@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, warning = FALSE}
 library(dplyr)
 library(ggplot2)
+library(GGally)
 ```
 
 ```{r}
@@ -35,7 +36,7 @@ combined
 ```{r}
 # list of mandatory courses
 
-mandatory <- c("PSTAT 120", "CS 9", "PSTAT 122", "PSTAT 126")
+mandatory <- c("PSTAT 120", "CS 9", "PSTAT 122", "PSTAT 126", "CS 16")
 ```
 
 ```{r}
@@ -65,18 +66,20 @@ head(data)
 
 ```{r}
 ggplot(data, aes(non_mandatory)) + geom_bar() + theme_minimal() + 
-  xlab("Number of Non-Mandatory Course Taken") 
+  labs(x = "Number of Non-Mandatory Course Taken", title = "Histogram of Courses")
 ggplot(data, aes(num_areas)) + geom_bar() + theme_minimal() +
-  xlab("Number of Areas of Interest")
+  labs(x = "Number of Areas of Interest", title = "Histogram of Areas of Interest")
 ```
 
 ```{r}
-lr <- lm(num_areas ~ non_mandatory, data = data)
-summary(mlr)
+ggpairs(data, progress = F)
 ```
 
 
-
+```{r}
+lr <- lm(num_areas ~ non_mandatory, data = data)
+summary(lr)
+```
 
 
 
