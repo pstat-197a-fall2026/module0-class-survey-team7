@@ -21,6 +21,11 @@ class_data <- read_csv('../data/background-clean.csv') %>%
 head(class_data)
 ```
 ```{r}
+# Summarize class dataset
+summary(class_data)
+```
+
+```{r}
 # Creating new columns corresponding to classes of interest
 class_data <- class_data %>% 
   mutate(
@@ -48,6 +53,8 @@ class_barplot <- class_totals %>% ggplot(aes(x=course, y=total)) +
   theme_light()
 class_barplot
 ```
+From this plot, we can see that over half of the students who provided their survey data have taken one or both PSTAT 160 courses (34 students). Less than half of these students took PSTAT 174 (12 students), and less than a quarter of students took PSTAT 115 (7 students) and PSTAT 175 (6 students) respectively. 
+
 ```{r}
 # Summarize Student Comfort
 comfort_barplot <- class_data %>% ggplot(aes(x = stat.comf)) + 
@@ -56,4 +63,17 @@ comfort_barplot <- class_data %>% ggplot(aes(x = stat.comf)) +
        x = 'Comfort',
        y = 'Total')
 comfort_barplot
+```
+```{r}
+# Get totals
+comfort_totals <- class_data %>% count(stat.comf)
+comfort_totals
+```
+
+From this plot and the comfort totals, we can see that over half the students who provided their survey data reported they have 4/5 comfortability with statistics. Over a quarter of the students reported a comfortability of 5/5, while 9 students reported a comfortability of 3/5.
+
+```{r}
+# Building model
+
+
 ```
