@@ -16,7 +16,7 @@ library(dplyr)
 
 ```{r}
 # Load data and select variables of interest
-class_data <- read_csv("../data/background-clean.csv") %>% 
+class_data <- read_csv('../data/background-clean.csv') %>% 
   select(response_id, stat.comf, courses)
 head(class_data)
 ```
@@ -36,20 +36,24 @@ head(class_data)
 class_totals <- class_data %>% summarize(across(c(pstat_115, pstat_160,
                                                 pstat_174, pstat_175), sum)) %>% 
                 pivot_longer(cols=everything(),
-                             names_to = "course",
-                             values_to = "total")
+                             names_to = 'course',
+                             values_to = 'total')
   
 # Plot class totals
 class_barplot <- class_totals %>% ggplot(aes(x=course, y=total)) +
-  geom_col(fill = "#005A87") +
-  labs(title = "Students Per Upper Division PSTAT Courses",
-       x = "Course",
-       y = "Total Students")
+  geom_col(fill = '#005A87') +
+  labs(title = 'Students Per Upper Division PSTAT Courses',
+       x = 'Course',
+       y = 'Total Students') +
   theme_light()
 class_barplot
 ```
 ```{r}
 # Summarize Student Comfort
-
-
+comfort_barplot <- class_data %>% ggplot(aes(x = stat.comf)) + 
+  geom_bar(fill = ('#2E6F40')) +
+  labs(title = 'Student Statistics Comfort Count',
+       x = 'Comfort',
+       y = 'Total')
+comfort_barplot
 ```
