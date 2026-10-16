@@ -107,3 +107,41 @@ par(mfrow =c(1,2))
 
 plot(lr)
 ```
+
+
+```{r}
+test <- data %>% 
+  mutate(non_mandatory = sapply(strsplit(courses, split = ", "), function(x)
+    {paste(keep(x, .p = function(x) !(x %in% mandatory)), collapse = ", ")}))
+```
+
+```{r}
+all_courses <- unique(strsplit(test$non_mandatory, ", "))
+
+all_courses
+```
+```{r}
+all_courses[[3]]
+```
+
+
+```{r}
+contain <- list()
+```
+
+```{r}
+for (i in length(all_courses)) {
+  for (n in length(all_courses[i])) {
+    contain = list(contain, all_courses[[i]][n])
+  }
+}
+```
+
+```{r}
+contain
+```
+
+
+
+
+
