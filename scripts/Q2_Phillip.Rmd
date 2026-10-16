@@ -13,6 +13,7 @@ library(dplyr)
 library(ggplot2)
 library(GGally)
 library(purrr)
+library(crayon)
 ```
 
 ```{r}
@@ -106,37 +107,60 @@ plot(lr)
 
 
 ```{r}
-test <- data %>% 
+# creates a column of all of the nonmandatory courses they are taking
+data <- data %>% 
   mutate(non_mandatory = sapply(strsplit(courses, split = ", "), function(x)
     {paste(keep(x, .p = function(x) !(x %in% mandatory)), collapse = ", ")}))
+
+head(data["non_mandatory"])
 ```
 
 ```{r}
-all_courses <- unique(strsplit(test$non_mandatory, ", "))
+# collects a list of every single non-mandatory class taken by the whole class
+list_courses <- ""
 
-all_courses
+for (i in 1:length(data$non_mandatory)) {
+  if (i == 1) {
+    list_courses = data$non_mandatory[i]}
+  else {
+  list_courses = list_courses %+% ", " %+% data$non_mandatory[i]}}
+
+all_nonmandatory <- unique(strsplit(list_courses, split = ", ")[[1]])
+all_nonmandatory
 ```
+
+
 ```{r}
-all_courses[[3]]
+# Adds extra columns to the dataframe where each column is a non-mandatory course
+# currently filled with NA
+course_df <- matrix(rep(NA, length(all_nonmandatory) * length(data$non_mandatory)), 
+                 nrow = length(data$non_mandatory), ncol = length(all_nonmandatory))
+colnames(course_df) <- all_nonmandatory
+
+data <- cbind(data, course_df)
 ```
 
-
 ```{r}
-contain <- list()
-```
-
-```{r}
-for (i in length(all_courses)) {
-  for (n in length(all_courses[i])) {
-    contain = list(contain, all_courses[[i]][n])
-  }
+# changes the values in each newly added column to see if that course was taken
+# either TRUE or FALSE if they took that course
+for (course in all_nonmandatory) {
+  data[course] = sapply(strsplit(data$non_mandatory, split = ", "), function(x)
+    course %in% x)
 }
 ```
 
 ```{r}
-contain
+colnames(data)
 ```
 
+
+```{r}
+# creates our linear regression model with the courses as factors
+mlr <- lm(num_areas ~ num_non_mandatory + `PSTAT 115` + `PSTAT 127` + `PSTAT 131` 
+          + `PSTAT 160` + `LING 110` + `PSTAT 100` + `CS 5` + `PSTAT 134` + 
+          `PSTAT 175` + `PSTAT 174` + `GEOG 186` + `LING 104` + `CS 130`, data)
+summary(mlr)
+```
 
 
 
