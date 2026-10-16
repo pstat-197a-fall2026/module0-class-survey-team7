@@ -2,19 +2,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Anna Calkins, Makala Mesina-Forester, Nic Chan, Phillip Phi, Lawrence Huynh">
-<meta name="dcterms.date" content="2026-10-15">
+<meta name="dcterms.date" content="2026-10-16">
 
-<title>Analysis of class surveys</title>
+<title>Analysis of Class Surveys</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -28,15 +34,14 @@ ul.task-list li input[type="checkbox"] {
 <script src="report_files/libs/clipboard/clipboard.min.js"></script>
 <script src="report_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="report_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="report_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="report_files/libs/quarto-html/popper.min.js"></script>
 <script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="report_files/libs/quarto-html/anchor.min.js"></script>
 <link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="report_files/libs/bootstrap/bootstrap-fc78cc84e086300a0584af8142339858.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="report_files/libs/bootstrap/bootstrap-22b4c1abd28e63ff45684f4962f09b6b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -49,8 +54,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Analysis of class surveys</h1>
-<p class="subtitle lead">If you want a subtitle put it here</p>
+<h1 class="title">Analysis of Class Surveys</h1>
+<p class="subtitle lead">PSTAT197A Module 0</p>
 </div>
 
 
@@ -67,7 +72,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 15, 2026</p>
+      <p class="date">October 16, 2026</p>
     </div>
   </div>
   
@@ -79,10 +84,9 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Use this as a template. Keep the headers and remove all other text. Overall, your report may be quite short. When it is complete, render and then push changes to your team repository.</p>
 <section id="executive-summary" class="level2">
 <h2 class="anchored" data-anchor-id="executive-summary">Executive summary</h2>
-<p>Although it may seem that elective PSTAT coursework should have a correlation between programming, statistics, and breadth of interest, our various models did not show statistical significance in the correlation between any of these metrics. Programming-related elective coursework, such as CS16 and CS5, did not significantly affect estimates of programming comfortability, nor did it significantly predict advanced programming proficiency. Elective statistics coursework, such as PSTAT 115 and PSTAT 174, was also not an accurate predictor of student comfortability or advanced proficiency in statistics. While investigating the linear correlation between the number of non-mandatory classes taken and the number of areas of interest, we found no significant relationship.</p>
+<p>Although it may seem that elective PSTAT coursework should have a correlation between programming, statistics, and breadth of interest, our various models did not show statistical significance in the correlation between any of these metrics. Programming-related elective coursework, such as CS16 and CS5, did not significantly affect estimates of programming comfortability, nor did it significantly predict advanced programming proficiency. Elective statistics coursework, such as PSTAT 115 and PSTAT 174, was also not an accurate predictor of student comfortability or advanced proficiency in statistics. While investigating the linear correlation between the number of non-mandatory classes taken and the number of areas of interest, we found no significant relationship. However, when we expanded and investigated the impact of each individual course, one class was shown to have a meaningful impact on the number of areas of interest, specifically CS 5. At significance level 0.05, it was the only attribute that seemed to have a substantial influence since the other factors either required greatly increasing the alpha level or were simply not found to have any statistical significance in predicting the number of areas of interest.</p>
 </section>
 <section id="data-description" class="level2">
 <h2 class="anchored" data-anchor-id="data-description">Data description</h2>
@@ -95,7 +99,7 @@ ul.task-list li input[type="checkbox"] {
 <ol type="1">
 <li><p>Can we predict student comfortability/proficiency in statistics using the elective upper-division Statistics courses they have taken?</p></li>
 <li><p>Is there a linear relationship between reported programming comfortability/ proficiency and elective, programming-related coursework? Can we fit a linear model to it?</p></li>
-<li><p>Is there a linear relationship between having taken more non-mandatory courses and having more areas of interest?</p></li>
+<li><p>Is there a linear relationship between having taken non-mandatory courses and having more areas of interest?</p></li>
 </ol>
 </section>
 <section id="findings" class="level2">
@@ -113,13 +117,13 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="question-3" class="level3">
 <h3 class="anchored" data-anchor-id="question-3">Question 3</h3>
-<p>What we found in our research is that there is no significant correlation between the number of areas a student is interested in and the number of non-mandatory classes a student takes. Our linear regression model found no statistically significant linear relationship between number of non-mandatory classes taken and the number of areas of interest that the individual marked on the form. Based on the linear regression findings, we got a p-value of 0.364. The effect of non_mandatory indicates that non_mandatory is not a significant predictor of num_areas. Analyzing the residuals of the linear regression model, we can see that the residuals are normally distributed with a mean near zero.</p>
+<p>What we found in our research is that there is no significant correlation between the number of areas a student is interested in and the number of non-mandatory classes a student takes. Our linear regression model found no statistically significant linear relationship between number of non-mandatory classes taken and the number of areas of interest that the individual marked on the form. Based on the linear regression findings, we got a p-value of 0.364. The effect of non_mandatory indicates that non_mandatory is not a significant predictor of num_areas. Analyzing the residuals of the linear regression model, we can see that the residuals are normally distributed with a mean near zero. However, there is is a significant correlation between taking the “CS 5” course and having an increased number of areas of interest. With our multiple linear regression model, we can see that “CS 5”TRUE is associated with an estimate of 4.955 and a p-value of 0.0229. This means students who have taken CS 5 are predicted to have approximately 5 more areas of interest than students who have not taken the class. Our analysis shows that among all of the non-mandatory courses students have taken, the only significant predictor of num_areas is whether they took CS 5.</p>
 </section>
-<section id="code-chunks" class="level3">
-<h3 class="anchored" data-anchor-id="code-chunks">Code chunks</h3>
 </section>
-<section id="question-1-1" class="level3">
-<h3 class="anchored" data-anchor-id="question-1-1">Question 1</h3>
+<section id="code-chunks" class="level2">
+<h2 class="anchored" data-anchor-id="code-chunks">Code chunks</h2>
+<section id="code---question-1" class="level3">
+<h3 class="anchored" data-anchor-id="code---question-1">Code - Question 1</h3>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
@@ -133,13 +137,13 @@ ul.task-list li input[type="checkbox"] {
 6         4 adv       PSTAT 100, PSTAT 120, PSTAT 122, PSTAT 126, PSTAT 131, PS…</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   stat.comf      stat.prof           courses         
- Min.   :3.000   Length:51          Length:51         
- 1st Qu.:4.000   Class :character   Class :character  
- Median :4.000   Mode  :character   Mode  :character  
- Mean   :4.137                                        
- 3rd Qu.:5.000                                        
- Max.   :5.000                                        </code></pre>
+<pre><code>   stat.comf         stat.prof       courses   
+ Min.   :3.000   Length   :51   Length   : 51  
+ 1st Qu.:4.000   N.unique : 2   N.unique : 43  
+ Median :4.000   N.blank  : 0   N.blank  :  0  
+ Mean   :4.137   Min.nchar: 3   Min.nchar: 36  
+ 3rd Qu.:5.000   Max.nchar: 3   Max.nchar:121  
+ Max.   :5.000                                 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 6
@@ -224,8 +228,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </section>
-<section id="question-2-1" class="level3">
-<h3 class="anchored" data-anchor-id="question-2-1">Question 2</h3>
+<section id="code---question-2" class="level3">
+<h3 class="anchored" data-anchor-id="code---question-2">Code - Question 2</h3>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 51 × 11
@@ -305,35 +309,27 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </section>
-<section id="question-3-1" class="level3">
-<h3 class="anchored" data-anchor-id="question-3-1">Question 3</h3>
+<section id="code---question-3" class="level3">
+<h3 class="anchored" data-anchor-id="code---question-3">Code - Question 3</h3>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 2
-  courses                                                                  areas
-  &lt;chr&gt;                                                                    &lt;chr&gt;
-1 PSTAT 115, PSTAT 120, PSTAT 122, PSTAT 126, PSTAT 127, PSTAT 131, PSTAT… Spat…
-2 PSTAT 120, PSTAT 126, CS 9, LING 110                                     Anal…
-3 PSTAT 120, PSTAT 122, PSTAT 126, PSTAT 131, PSTAT 160, CS 9              Anal…
-4 PSTAT 100, PSTAT 120, PSTAT 122, PSTAT 126, PSTAT 131, PSTAT 160, CS 16  Deep…
-5 PSTAT 120, PSTAT 131, PSTAT 160, CS 5, CS 9                              Anal…
-6 PSTAT 100, PSTAT 120, PSTAT 122, PSTAT 126, PSTAT 131, PSTAT 134, PSTAT… Deep…</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 4
-  courses                                      areas num_non_mandatory num_areas
-  &lt;chr&gt;                                        &lt;chr&gt;             &lt;int&gt;     &lt;int&gt;
-1 PSTAT 115, PSTAT 120, PSTAT 122, PSTAT 126,… Spat…                 4         5
-2 PSTAT 120, PSTAT 126, CS 9, LING 110         Anal…                 1         9
-3 PSTAT 120, PSTAT 122, PSTAT 126, PSTAT 131,… Anal…                 2        10
-4 PSTAT 100, PSTAT 120, PSTAT 122, PSTAT 126,… Deep…                 3         5
-5 PSTAT 120, PSTAT 131, PSTAT 160, CS 5, CS 9  Anal…                 3        10
-6 PSTAT 100, PSTAT 120, PSTAT 122, PSTAT 126,… Deep…                 4         6</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="report_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="report_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -360,20 +356,6 @@ F-statistic: 0.8404 on 1 and 47 DF,  p-value: 0.364</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="report_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="report_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
 <p><img src="report_files/figure-html/unnamed-chunk-4-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
@@ -391,6 +373,57 @@ F-statistic: 0.8404 on 1 and 47 DF,  p-value: 0.364</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-4-6.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  lr$residuals
+W = 0.98787, p-value = 0.8906</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "courses"           "areas"             "num_non_mandatory"
+ [4] "num_areas"         "non_mandatory"     "PSTAT 115"        
+ [7] "PSTAT 127"         "PSTAT 131"         "PSTAT 160"        
+[10] "LING 110"          "PSTAT 100"         "CS 5"             
+[13] "PSTAT 134"         "PSTAT 175"         "PSTAT 174"        
+[16] "GEOG 186"          "LING 104"          "CS 130"           </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = num_areas ~ num_non_mandatory + `PSTAT 115` + `PSTAT 127` + 
+    `PSTAT 131` + `PSTAT 160` + `LING 110` + `PSTAT 100` + `CS 5` + 
+    `PSTAT 134` + `PSTAT 175` + `PSTAT 174` + `GEOG 186` + `LING 104` + 
+    `CS 130`, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.3356 -0.6786  0.0000  0.7661  3.6876 
+
+Coefficients: (1 not defined because of singularities)
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          7.297      1.175   6.212 4.06e-07 ***
+num_non_mandatory   -3.284      1.901  -1.728   0.0929 .  
+`PSTAT 115`TRUE      4.432      2.219   1.997   0.0536 .  
+`PSTAT 127`TRUE      1.150      2.153   0.534   0.5965    
+`PSTAT 131`TRUE      3.270      2.184   1.497   0.1433    
+`PSTAT 160`TRUE      2.664      1.846   1.443   0.1579    
+`LING 110`TRUE       4.987      2.671   1.867   0.0703 .  
+`PSTAT 100`TRUE      3.234      1.826   1.771   0.0852 .  
+`CS 5`TRUE           4.955      2.082   2.380   0.0229 *  
+`PSTAT 134`TRUE      3.290      2.005   1.641   0.1097    
+`PSTAT 175`TRUE      2.941      2.092   1.406   0.1687    
+`PSTAT 174`TRUE      2.960      1.949   1.519   0.1378    
+`GEOG 186`TRUE       2.613      2.633   0.992   0.3278    
+`LING 104`TRUE       1.917      3.413   0.562   0.5779    
+`CS 130`TRUE            NA         NA      NA       NA    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.752 on 35 degrees of freedom
+Multiple R-squared:  0.2911,    Adjusted R-squared:  0.02786 
+F-statistic: 1.106 on 13 and 35 DF,  p-value: 0.3864</code></pre>
 </div>
 </div>
 </section>

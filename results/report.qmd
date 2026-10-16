@@ -14,7 +14,6 @@ execute:
   cache: true
 ---
 
-
 ```{r}
 # load any other packages and read data here
 library(tidyverse)
@@ -27,11 +26,12 @@ library(ggplot2)
 library(GGally)
 library(purrr)
 library(corrplot)
+library(crayon)
 ```
 
 ## Executive summary
 
-Although it may seem that elective PSTAT coursework should have a correlation between programming, statistics, and breadth of interest, our various models did not show statistical significance in the correlation between any of these metrics. Programming-related elective coursework, such as CS16 and CS5, did not significantly affect estimates of programming comfortability, nor did it significantly predict advanced programming proficiency. Elective statistics coursework, such as PSTAT 115 and PSTAT 174, was also not an accurate predictor of student comfortability or advanced proficiency in statistics. While investigating the linear correlation between the number of non-mandatory classes taken and the number of areas of interest, we found no significant relationship.
+Although it may seem that elective PSTAT coursework should have a correlation between programming, statistics, and breadth of interest, our various models did not show statistical significance in the correlation between any of these metrics. Programming-related elective coursework, such as CS16 and CS5, did not significantly affect estimates of programming comfortability, nor did it significantly predict advanced programming proficiency. Elective statistics coursework, such as PSTAT 115 and PSTAT 174, was also not an accurate predictor of student comfortability or advanced proficiency in statistics. While investigating the linear correlation between the number of non-mandatory classes taken and the number of areas of interest, we found no significant relationship. However, when we expanded and investigated the impact of each individual course, one class was shown to have a meaningful impact on the number of areas of interest, specifically CS 5. At significance level 0.05, it was the only attribute that seemed to have a substantial influence since the other factors either required greatly increasing the alpha level or were simply not found to have any statistical significance in predicting the number of areas of interest.
 
 ## Data description
 
@@ -47,7 +47,7 @@ We sought to investigate the relationships between previous courses taken and sk
 
 2.  Is there a linear relationship between reported programming comfortability/ proficiency and elective, programming-related coursework? Can we fit a linear model to it?
 
-3.  Is there a linear relationship between having taken more non-mandatory courses and having more areas of interest?
+3.  Is there a linear relationship between having taken non-mandatory courses and having more areas of interest?
 
 ## Findings
 
@@ -67,7 +67,7 @@ Similarly, when fitting programming advanced proficiency in a linear model with 
 
 ### Question 3
 
-What we found in our research is that there is no significant correlation between the number of areas a student is interested in and the number of non-mandatory classes a student takes. Our linear regression model found no statistically significant linear relationship between number of non-mandatory classes taken and the number of areas of interest that the individual marked on the form. Based on the linear regression findings, we got a p-value of 0.364. The effect of non_mandatory indicates that non_mandatory is not a significant predictor of num_areas. Analyzing the residuals of the linear regression model, we can see that the residuals are normally distributed with a mean near zero.
+What we found in our research is that there is no significant correlation between the number of areas a student is interested in and the number of non-mandatory classes a student takes. Our linear regression model found no statistically significant linear relationship between number of non-mandatory classes taken and the number of areas of interest that the individual marked on the form. Based on the linear regression findings, we got a p-value of 0.364. The effect of non_mandatory indicates that non_mandatory is not a significant predictor of num_areas. Analyzing the residuals of the linear regression model, we can see that the residuals are normally distributed with a mean near zero. However, there is is a significant correlation between taking the "CS 5" course and having an increased number of areas of interest. With our multiple linear regression model, we can see that "CS 5"TRUE is associated with an estimate of 4.955 and a p-value of 0.0229. This means students who have taken CS 5 are predicted to have approximately 5 more areas of interest than students who have not taken the class. Our analysis shows that among all of the non-mandatory courses students have taken, the only significant predictor of num_areas is whether they took CS 5.
 
 ## Code chunks
 
@@ -382,6 +382,45 @@ plot(lr)
 shapiro.test(lr$residuals)
 
 
+# creates a column of all of the nonmandatory courses they are taking
+data <- data %>% 
+  mutate(non_mandatory = sapply(strsplit(courses, split = ", "), function(x)
+  {paste(keep(x, .p = function(x) !(x %in% mandatory)), collapse = ", ")}))
+
+# collects a list of every single non-mandatory class taken by the whole class
+list_courses <- ""
+
+for (i in 1:length(data$non_mandatory)) {
+  if (i == 1) {
+    list_courses = data$non_mandatory[i]}
+  else {
+    list_courses = list_courses %+% ", " %+% data$non_mandatory[i]}}
+
+all_nonmandatory <- unique(strsplit(list_courses, split = ", ")[[1]])
+
+# Adds extra columns to the dataframe where each column is a non-mandatory course
+# currently filled with NA
+course_df <- matrix(rep(NA, length(all_nonmandatory) * length(data$non_mandatory)), 
+                    nrow = length(data$non_mandatory), ncol = length(all_nonmandatory))
+colnames(course_df) <- all_nonmandatory
+
+data <- cbind(data, course_df)
+
+# changes the values in each newly added column to see if that course was taken
+# either TRUE or FALSE if they took that course
+for (course in all_nonmandatory) {
+  data[course] = sapply(strsplit(data$non_mandatory, split = ", "), function(x)
+    course %in% x)
+}
+
+colnames(data)
+
+# creates our linear regression model with the courses as factors
+# calls the summary so we can see what is important as a predictor
+mlr <- lm(num_areas ~ num_non_mandatory + `PSTAT 115` + `PSTAT 127` + `PSTAT 131` 
+          + `PSTAT 160` + `LING 110` + `PSTAT 100` + `CS 5` + `PSTAT 134` + 
+            `PSTAT 175` + `PSTAT 174` + `GEOG 186` + `LING 104` + `CS 130`, data)
+summary(mlr)
 ```
 
 ### Links
