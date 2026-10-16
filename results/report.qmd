@@ -118,7 +118,8 @@ comfort_barplot <- class_data %>% ggplot(aes(x = stat.comf)) +
   geom_bar(fill = ('#2E6F40')) +
   labs(title = 'Student Statistics Comfort Count',
        x = 'Comfort',
-       y = 'Total')
+       y = 'Total') +
+  theme_light()
 comfort_barplot
 
 # Get totals
