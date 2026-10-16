@@ -32,13 +32,12 @@ summary(class_data)
 # Creating new columns corresponding to classes of interest
 class_data <- class_data %>% 
   mutate(
-    pstat_115 = if_else(str_detect(courses, 'PSTAT 115'),1, 0),
+    pstat_115 = if_else(str_detect(courses, 'PSTAT 115'), 1, 0),
     pstat_160 = if_else(str_detect(courses, 'PSTAT 160'), 1, 0),
     pstat_174 = if_else(str_detect(courses, 'PSTAT 174'), 1, 0),
-    pstat_175 = if_else(str_detect(courses, 'PSTAT 175'), 1, 0)
-    ) %>% 
-   dummy_cols(select_columns = "stat.prof") %>% 
-  select(-courses)
+    pstat_175 = if_else(str_detect(courses, 'PSTAT 175'), 1, 0),
+    adv_prof = if_else(str_detect(stat.prof, 'adv'), 1, 0)) %>% 
+  select(-(c(courses, stat.prof)))
 head(class_data)
 ```
 ```{r}
@@ -125,10 +124,10 @@ From these metrics, we can see that our model didn't do a very good job at predi
 ## Building Model - Predicting Proficiency
 ```{r}
 # Split data
-proficiency_split <- initial_split(class_data, prop = 0.80, strata = stat.prof)
+proficiency_split <- initial_split(class_data, prop = 0.80, strata = adv_prof)
 proficiency_train <- training(proficiency_split)
 proficiency_test <- testing(proficiency_split)
-proficiency_folds <- vfold_cv(proficiency_train, v = 5, strata = stat.prof)
+proficiency_folds <- vfold_cv(proficiency_train, v = 5, strata = adv_prof)
 
 # Check counts
 nrow(proficiency_train)
@@ -136,9 +135,9 @@ nrow(proficiency_test)
 ```
 ```{r}
 # Create recipe
-proficiency_recipe <- recipe(stat.prof_adv ~ pstat_115 + pstat_160 + 
-                                             pstat_174 + pstat_175, 
-                             data = proficiency_train) 
+proficiency_recipe <- recipe(adv_prof ~ pstat_115 + pstat_160 + 
+                                   pstat_174 + pstat_175, 
+                         data = proficiency_train) 
 
 # Model
 proficiency_model <- linear_reg() %>%
@@ -153,7 +152,6 @@ proficiency_wflow <- workflow() %>%
 # Cross-Validation
 proficiency_fit <- fit_resamples(proficiency_wflow, resamples = proficiency_folds,
                             metrics = metric_set(rmse, rsq, mae))
-
 ```
 
 ```{r}
