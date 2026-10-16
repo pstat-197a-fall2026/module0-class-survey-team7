@@ -306,10 +306,6 @@ combined <- interest %>% inner_join(background, by = "response_id")
 
 combined <- combined[c("courses", "areas")]
 
-head(combined)
-
-
-
 # list of mandatory courses
 
 mandatory <- c("PSTAT 120", "CS 9", "PSTAT 122", "PSTAT 126", "CS 16")
@@ -332,7 +328,7 @@ data <- combined %>%
       sum(strsplit(areas[[1]], split = ", ")[[1]] == "generally"), 
     .by = areas) 
   
-head(data)
+#head(data)
 
 # getting count of areas of interest 
 areas_count <- data %>%
@@ -354,6 +350,22 @@ areas_count <- data %>%
 
 data_nums <- data %>% select(num_non_mandatory, num_areas)
 
+# bar plot of Number of Areas of interest
+ggplot(data, aes(x = num_areas)) +
+  geom_bar(fill = "#003660", col = "#FEBC11") +
+  labs(x = "Number of Areas of Interest", y = "Number of People Interested in X Areas") +
+  scale_x_continuous(breaks = seq(1, 13, by = 1)) +
+  scale_y_continuous(breaks = seq(1, 10, by = 2))
+
+# bar plot of number of people interested in area 
+ggplot(areas_count, aes(x= reorder(areas, -n), y = n, fill = reorder(areas, -n))) +
+  geom_col() +
+  labs(x = "Areas of Interest", y = "Number of People Interested in Area", fill = "Areas of Interest",
+       title = "Number of People Interested in Areas") +
+  theme(axis.text.x.bottom = element_blank()) +
+  geom_text(aes(y = 20, label = n),
+            position = position_stack(vjust = 0.5)) 
+
 ggpairs(data_nums, progress = F)
 
 # creates our linear regression model with only our numerical varaibles
@@ -368,21 +380,9 @@ par(mfrow =c(1,2))
 
 plot(lr)
 
-# bar plot of Number of Areas of interest
-ggplot(data, aes(x = num_areas)) +
-  geom_bar(fill = "#003660", col = "#FEBC11") +
-  labs(x = "Number of Areas of Interest", y = "Number of People Interested in X Areas") +
-  scale_x_continuous(breaks = seq(1, 13, by = 1)) +
-  scale_y_continuous(breaks = seq(1, 10, by = 2))
+shapiro.test(lr$residuals)
 
-# bar plot of number of people interested in area 
-ggplot(areas_count, aes(x= reorder(areas, -n), y = n, fill = reorder(areas, -n))) +
-  geom_col() +
-  labs(x = "Areas of Interest", y = "Number of People Interested in Area", fill = "Areas of Interest",
-       title = "Number of People Interested in Areas") +
-  theme(axis.text.x.bottom = element_blank()) +
-   geom_text(aes(y = 20, label = n),
-            position = position_stack(vjust = 0.5)) 
+
 ```
 
 ### Links
