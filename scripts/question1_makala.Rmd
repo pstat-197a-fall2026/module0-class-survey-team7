@@ -14,12 +14,13 @@ Predictors: courses (PSTAT 115, PSTAT 160, PSTAT 171, PSTAT 175)
 library(tidyverse)
 library(dplyr)
 library(tidymodels)
+library(fastDummies)
 ```
 
 ```{r}
 # Load data and select variables of interest
 class_data <- read_csv('../data/background-clean.csv') %>% 
-  select(stat.comf, courses)
+  select(stat.comf, stat.prof, courses)
 head(class_data)
 ```
 ```{r}
@@ -36,6 +37,7 @@ class_data <- class_data %>%
     pstat_174 = if_else(str_detect(courses, 'PSTAT 174'), 1, 0),
     pstat_175 = if_else(str_detect(courses, 'PSTAT 175'), 1, 0)
     ) %>% 
+   dummy_cols(select_columns = "stat.prof") %>% 
   select(-courses)
 head(class_data)
 ```
@@ -75,17 +77,18 @@ comfort_totals
 
 From this plot and the comfort totals, we can see that over half the students who provided their survey data reported they have 4/5 comfortability with statistics. Over a quarter of the students reported a comfortability of 5/5, while 9 students reported a comfortability of 3/5.
 
-## Building Model
+## Building Model - Predicting Comfortability
 ```{r}
+set.seed(2026)
 # Split data
-class_split <- initial_split(class_data, prop = 0.80, strata = stat.comf)
-class_train <- training(class_split)
-class_test <- testing(class_split)
-class_folds <- vfold_cv(class_train, v = 5, strata = stat.comf)
+comfort_split <- initial_split(class_data, prop = 0.80, strata = stat.comf)
+comfort_train <- training(comfort_split)
+comfort_test <- testing(comfort_split)
+comfort_folds <- vfold_cv(comfort_train, v = 5, strata = stat.comf)
 
 # Check counts
-nrow(class_train)
-nrow(class_test)
+nrow(comfort_train)
+nrow(comfort_test)
 
 ```
 39 observations in the training set, 12 in the testing set!
@@ -93,28 +96,68 @@ nrow(class_test)
 # Linear Regression Model
 ```{r}
 # Create recipe
-class_recipe <- recipe(stat.comf ~ pstat_115 + pstat_160 + 
+comfort_recipe <- recipe(stat.comf ~ pstat_115 + pstat_160 + 
                                    pstat_174 + pstat_175, 
-                         data = class_train) 
+                         data = comfort_train) 
 
 # Model
-linear_model <- linear_reg() %>%
+comfort_model <- linear_reg() %>%
   set_engine("lm") %>%
   set_mode("regression")
 
 # Workflow
-linear_wflow <- workflow() %>%
-  add_model(linear_model) %>%
-  add_recipe(class_recipe)
+comfort_wflow <- workflow() %>%
+  add_model(comfort_model) %>%
+  add_recipe(comfort_recipe)
 
 # Cross-Validation
-linear_fit <- fit_resamples(linear_wflow, resamples = class_folds,
+comfort_fit <- fit_resamples(comfort_wflow, resamples = comfort_folds,
                             metrics = metric_set(rmse, rsq, mae))
 ```
 
 ```{r}
 # Evaluate results
-collect_metrics(linear_fit)
+collect_metrics(comfort_fit)
 ```
 
-From these metrics, we can see that our model didn't do a very good job at predicting student comfortability with statistics. The RMSE is is about 0.765. This value is pretty high, which means that the model's predicted values were far from the actual values. The R-squared value is also low, about 0.13. This means that only 13% of the variance in student comfortability can be explained by our independent variables (our classes of interest). 
+From these metrics, we can see that our model didn't do a very good job at predicting student comfortability with statistics. The RMSE is is about 0.769. This value is pretty high, which means that the model's predicted values were far from the actual values. The R-squared value is also low, about 0.18. This means that only 18% of the variance in student comfortability can be explained by our independent variables (our classes of interest). 
+
+## Building Model - Predicting Proficiency
+```{r}
+# Split data
+proficiency_split <- initial_split(class_data, prop = 0.80, strata = stat.prof)
+proficiency_train <- training(proficiency_split)
+proficiency_test <- testing(proficiency_split)
+proficiency_folds <- vfold_cv(proficiency_train, v = 5, strata = stat.prof)
+
+# Check counts
+nrow(proficiency_train)
+nrow(proficiency_test)
+```
+```{r}
+# Create recipe
+proficiency_recipe <- recipe(stat.prof_adv ~ pstat_115 + pstat_160 + 
+                                             pstat_174 + pstat_175, 
+                             data = proficiency_train) 
+
+# Model
+proficiency_model <- linear_reg() %>%
+  set_engine("lm") %>%
+  set_mode("regression")
+
+# Workflow
+proficiency_wflow <- workflow() %>%
+  add_model(proficiency_model) %>%
+  add_recipe(proficiency_recipe)
+
+# Cross-Validation
+proficiency_fit <- fit_resamples(proficiency_wflow, resamples = proficiency_folds,
+                            metrics = metric_set(rmse, rsq, mae))
+
+```
+
+```{r}
+# Evaluate results
+collect_metrics(proficiency_fit)
+```
+

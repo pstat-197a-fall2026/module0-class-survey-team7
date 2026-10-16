@@ -8,10 +8,11 @@ date: "2026-10-13"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, warning = FALSE}
+```{r, message = FALSE}
 library(dplyr)
 library(ggplot2)
 library(GGally)
+library(purrr)
 ```
 
 ```{r}
@@ -25,11 +26,14 @@ interest <-
 ```
 
 ```{r}
+# combines the two datasets into one data frame
+# only keeps the courses and areas columns
+
 combined <- interest %>% inner_join(background, by = "response_id")
 
 combined <- combined[c("courses", "areas")]
 
-combined
+head(combined)
 ```
 
 
@@ -44,7 +48,7 @@ data <- combined %>%
   
   # separates the string containing the list of courses into each course code
   # counts number of courses taken that were not in our list of mandatory courses
-  mutate(non_mandatory = sum(!(strsplit(courses, 
+  mutate(num_non_mandatory = sum(!(strsplit(courses, 
                                 split = ", ")[[1]] %in% mandatory)), 
                                 .by = "courses") %>%
   
@@ -59,27 +63,40 @@ data <- combined %>%
     .by = areas) %>%
   
   # only keeps the counts of non-mandatory courses and areas of interest
-  select(non_mandatory, num_areas)
+  # keeps the areas of interest
+  select(courses, num_non_mandatory, num_areas)
 
 head(data)
 ```
 
 ```{r}
-ggplot(data, aes(non_mandatory)) + geom_bar() + theme_minimal() + 
+# creates barplots for the number of non-mandatory courses and areas of interest
+
+ggplot(data, aes(num_non_mandatory)) + geom_bar() + theme_minimal() + 
   labs(x = "Number of Non-Mandatory Course Taken", title = "Histogram of Courses")
+
 ggplot(data, aes(num_areas)) + geom_bar() + theme_minimal() +
   labs(x = "Number of Areas of Interest", title = "Histogram of Areas of Interest")
 ```
 
 ```{r}
-ggpairs(data, progress = F)
+# calculates the correlation coefficient 
+# only uses the numerical variables
+# creates a line and box plot of non-mandatory courses vs areas of interest
+
+data_nums <- data %>% select(num_non_mandatory, num_areas)
+
+ggpairs(data_nums, progress = F)
 ```
 
 
 ```{r}
-lr <- lm(num_areas ~ non_mandatory, data = data)
+# creates our linear regression model with only our numerical varaibles
+
+lr <- lm(num_areas ~ num_non_mandatory, data = data)
 summary(lr)
 ```
+
 
 
 
