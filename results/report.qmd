@@ -27,6 +27,7 @@ library(fastDummies)
 library(ggplot2)
 library(GGally)
 library(purrr)
+library(corrplot)
 ```
 
 ## Executive summary
@@ -217,7 +218,7 @@ programming_classes <- background %>%
     cs_16 = if_else(str_detect(courses, 'CS 16'), 1, 0),
     pstat_100 = if_else(str_detect(courses, 'PSTAT 100'), 1, 0),
     pstat_131 = if_else(str_detect(courses, 'PSTAT 131'), 1, 0),
-    dummy_cols(programming_classes, select_columns = "prog.prof"))%>% 
+    dummy_cols(background, select_columns = "prog.prof"))%>% 
   select(-courses)
 
 programming_comf_classes <- programming_classes %>% 
