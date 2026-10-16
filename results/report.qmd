@@ -70,6 +70,103 @@ my_df <- tibble(animal = c('snake', 'gecko'),
 my_df
 ```
 
+
+### Question 2
+
+```{r, echo = FALSE}
+background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
+
+tibble(background)
+
+programming_classes <- background %>% 
+  mutate(
+    cs_9 = if_else(str_detect(courses, 'CS 9'),1, 0),
+    cs_5 = if_else(str_detect(courses, 'CS 5'), 1, 0),
+    cs_16 = if_else(str_detect(courses, 'CS 16'), 1, 0),
+    pstat_100 = if_else(str_detect(courses, 'PSTAT 100'), 1, 0),
+    pstat_131 = if_else(str_detect(courses, 'PSTAT 131'), 1, 0),
+    dummy_cols(programming_classes, select_columns = "prog.prof"))%>% 
+  select(-courses)
+
+programming_comf_classes <- programming_classes %>% 
+  select(prog.comf, cs_9, cs_5, cs_16, pstat_100, pstat_131)
+
+head(programming_comf_classes)
+
+
+programming_comf_classes %>% 
+  select(is.numeric) %>% 
+  cor() %>% 
+  corrplot(type = 'lower', diag = FALSE, 
+           method = 'color')
+
+
+programming_comf_split <- initial_split(programming_comf_classes, prop = 0.80)
+programming_comf_train <- training(programming_comf_split)
+programming_comf_test <- testing(programming_comf_split)
+
+
+programming_comf_recipe <- recipe(prog.comf ~ ., data = programming_comf_train) %>%
+  step_dummy(all_nominal_predictors())
+
+programming_comf_lm_model <- linear_reg() %>% 
+  set_engine("lm")
+
+programming_comf_lm_wflow <- workflow() %>% 
+  add_model(programming_comf_lm_model) %>% 
+  add_recipe(programming_comf_recipe)
+
+programming_comf_lm_fit <- fit(programming_comf_lm_wflow, programming_comf_train)
+
+programming_comf_lm_fit %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
+
+set.seed(111)
+
+programming_prof_classes <- programming_classes %>% 
+  select(prog.prof_adv, cs_9, cs_5, cs_16, pstat_100, pstat_131)
+
+head(programming_prof_classes)
+
+programming_prof_classes %>% 
+  select(is.numeric) %>% 
+  cor() %>% 
+  corrplot(type = 'lower', diag = FALSE, 
+           method = 'color')
+
+programming_prof_split <- initial_split(programming_prof_classes, prop = 0.80)
+programming_prof_train <- training(programming_prof_split)
+programming_prof_test <- testing(programming_prof_split)
+
+
+programming_prof_recipe <- recipe(prog.prof_adv ~ ., data = programming_prof_train) %>%
+  step_dummy(all_nominal_predictors())
+
+#building recipe 
+programming_prof_lm_model <- linear_reg() %>% 
+  set_engine("lm")
+
+programming_prof_lm_wflow <- workflow() %>% 
+  add_model(programming_prof_lm_model) %>% 
+  add_recipe(programming_prof_recipe)
+
+programming_prof_lm_fit <- fit(programming_prof_lm_wflow, programming_prof_train)
+
+programming_prof_lm_fit %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
+
+```
+
+
+
+
+
+
+
+
+
 Code chunks will be executed in order when the document is rendered, so packages should be loaded at the very beginning of the document
 
 ### Rendering tables in markdown
