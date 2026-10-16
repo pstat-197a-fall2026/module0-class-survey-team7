@@ -65,15 +65,11 @@ Fitting programming comfortability to a linear model, using CS5, CS9, CS16, PSTA
 
 Similarly, when fitting programming advanced proficiency in a linear model with the same coursework, each course did not have any statistically significant effect on whether an individual reported advanced proficiency or not. Holding all else constant, PSTAT131, CS5, and CS16 had positive coefficients, indicating that they might have higher predicted odds of advanced proficiency, but still, by looking at the p-value, each course did not have statistically significant effects.
 
+### Question 3
+
+What we found in our research is that there is no significant correlation between the number of areas a student is interested in and the number of non-mandatory classes a student takes. Our linear regression model found no statistically significant linear relationship between number of non-mandatory classes taken and the number of areas of interest that the individual marked on the form. Based on the linear regression findings, we got a p-value of 0.364. The effect of non_mandatory indicates that non_mandatory is not a significant predictor of num_areas. Analyzing the residuals of the linear regression model, we can see that the residuals are normally distributed with a mean near zero.
+
 ### Code chunks
-
-```{r}
-#| echo: true
-my_df <- tibble(animal = c('snake', 'gecko'),
-                threatening = c(TRUE, FALSE))
-
-my_df
-```
 
 ### Question 1
 
