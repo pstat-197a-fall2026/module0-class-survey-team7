@@ -64,7 +64,19 @@ course_count <- joint %>%
   filter(!courses %in% mandatory)) %>%
   arrange(desc(n))
 
-
+# getting count of areas of interest 
+areas_count <- joint %>%
+  # separating courses by comma 
+  separate_rows(areas, sep = ",\\s*") %>%
+  
+  # creating clean course column 
+  mutate(areas = trimws(areas)) %>%
+  
+  # drop empty string 
+  filter(areas != "", areas != "generally") %>%
+  
+  # counting amount of time a course appears 
+  count(areas, name = "n") 
 ```
 
 # EDA
@@ -80,10 +92,20 @@ ggplot(joint, aes(x = num_areas)) +
 # pie chart of non-mandatory classes 
 ggplot(non_mandatory_course_count, aes(x= "", y = n, fill = reorder(courses, -n))) +
   geom_col() +
-  labs(title = "Pie Chart of Non-Mandatory Classes", fill = "Courses (Descending Order)") +
+  labs(title = "Pie Chart of Non-Mandatory Classes", fill = "Courses (Descending Order)", 
+       title = "") +
   geom_text(aes(x = 1.3, label = n),
             position = position_stack(vjust = 0.5)) +
   coord_polar(theta = "y")+
   theme_void()
+
+# pie chart of non-mandatory classes 
+ggplot(areas_count, aes(x= reorder(areas, -n), y = n, fill = reorder(areas, -n))) +
+  geom_col() +
+  labs(x = "Areas of Interest", y = "Number of People Interested in Area", fill = "Areas of Interest",
+       title = "Number of People Interested in Areas") +
+  theme(axis.text.x.bottom = element_blank()) +
+   geom_text(aes(y = 20, label = n),
+            position = position_stack(vjust = 0.5)) 
 ```
 
