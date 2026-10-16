@@ -13,6 +13,8 @@ library(fastDummies)
 
 ```
 
+### Question 2
+
 ## Loading background data
 
 ```{r}
@@ -36,20 +38,12 @@ programming_classes <- background %>%
     dummy_cols(programming_classes, select_columns = "prog.prof"))%>% 
   select(-courses)
 
-programming_prof_classes <- programming_classes %>% 
-  select(prog.prof_adv, prog.prof_beg, prog.prof_int, cs_9, cs_5, cs_16, pstat_100, pstat_131)
-
-head(programming_prof_classes)
-
 programming_comf_classes <- programming_classes %>% 
   select(prog.comf, cs_9, cs_5, cs_16, pstat_100, pstat_131)
 
 head(programming_comf_classes)
 
 ```
-
-Correlation Matrix for programming classes taken and reported programming proficiency
-
 
 Correlation Matrix for programming classes taken and reported programming comfortability
 
@@ -78,7 +72,7 @@ programming_comf_recipe <- recipe(prog.comf ~ ., data = programming_comf_train) 
 ```
 
 
-Comfortability Model
+## Comfortability Model
 
 ```{r}
 programming_comf_lm_model <- linear_reg() %>% 
@@ -102,9 +96,19 @@ From the report, we can see that the selection of classes does not do a great jo
 
 
 
-### Advanced Proficiency Model
+### Predicting Advanced Porgramming Proficiency Model
 
-Correlation Matrix for programming classes taken and reported programming proficiency
+
+```{r}
+set.seed(111)
+
+programming_prof_classes <- programming_classes %>% 
+  select(prog.prof_adv, cs_9, cs_5, cs_16, pstat_100, pstat_131)
+
+head(programming_prof_classes)
+```
+
+Correlation Matrix for programming classes taken and reported advanced programming proficiency
 
 ```{r}
 programming_prof_classes %>% 
@@ -125,10 +129,7 @@ programming_prof_test <- testing(programming_prof_split)
 programming_prof_recipe <- recipe(prog.prof_adv ~ ., data = programming_prof_train) %>%
   step_dummy(all_nominal_predictors())
 
-```
-
-
-```{r}
+#building recipe 
 programming_prof_lm_model <- linear_reg() %>% 
   set_engine("lm")
 
@@ -144,8 +145,6 @@ programming_prof_lm_fit %>%
 
 ```
 
-
-Looking at these metrics, we can see that reporting taking CS9 has a significant
 
 
 
