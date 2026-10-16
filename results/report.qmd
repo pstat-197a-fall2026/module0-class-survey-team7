@@ -34,7 +34,8 @@ Write a one-paragraph abstract summarizing what you did and your findings. It ne
 
 ## Data description
 
-Write a brief description of the dataset. Your description should cover how data were obtained, sample characteristics, and measurements taken. It does not need to be exhaustive, but sufficiently detailed to convey a clear high-level understanding of the dataset. You can utilize bullet points or tables if you feel it would help improve clarity.
+Data was obtained from a survey offered to all students enrolled in PSTAT 197A. There were 55 total respondents. The data consists of background information on students with columns regarding courses taken, proficiency in math, statistics, and programming. It also contains demographic information on class standing, gender, and race. There is also data on interests in programming languages preferences, domain specification, and technical areas of interest. It is worth noting that at the end of the survey, students were asked to give consent on their information being used in the dataset for analysis. Forty-nine students gave consent to allow their skills, experience, and project preferences to be used in the joint dataset.
+
 
 ## Questions of interest
 
