@@ -156,6 +156,7 @@ colnames(data)
 
 ```{r}
 # creates our linear regression model with the courses as factors
+# calls the summary so we can see what is important as a predictor
 mlr <- lm(num_areas ~ num_non_mandatory + `PSTAT 115` + `PSTAT 127` + `PSTAT 131` 
           + `PSTAT 160` + `LING 110` + `PSTAT 100` + `CS 5` + `PSTAT 134` + 
           `PSTAT 175` + `PSTAT 174` + `GEOG 186` + `LING 104` + `CS 130`, data)
