@@ -31,7 +31,7 @@ library(purrr)
 
 ## Executive summary
 
-Although it may seem that elective PSTAT coursework should have a correlation between programming, statistics, and breadth of interest, our various models did not show statistical significance in the correlation between any of these metrics. Programming-related elective coursework, such as CS16 and CS5, did not significantly affect estimates of programming comfortability, nor did it significantly predict advanced programming proficiency. Elective statistics coursework, such as PSTAT 115 and PSTAT 174, was also not an accurate predictor of student comfortability or advanced proficiency in statistics. While investigating the linear correlation between the number of non-mandatory classes taken and the number of areas of interest, we found no significant relationship. 
+Although it may seem that elective PSTAT coursework should have a correlation between programming, statistics, and breadth of interest, our various models did not show statistical significance in the correlation between any of these metrics. Programming-related elective coursework, such as CS16 and CS5, did not significantly affect estimates of programming comfortability, nor did it significantly predict advanced programming proficiency. Elective statistics coursework, such as PSTAT 115 and PSTAT 174, was also not an accurate predictor of student comfortability or advanced proficiency in statistics. While investigating the linear correlation between the number of non-mandatory classes taken and the number of areas of interest, we found no significant relationship.
 
 ## Data description
 
@@ -41,7 +41,7 @@ Data was obtained from a survey offered to all students enrolled in PSTAT 197A. 
 
 We sought to investigate the relationships between previous courses taken and skill levels and interests. Specifically, we wanted to focus on elective courses and potential effects that they may have on students given that students chose to take said courses. For example, we wondered if taking an additional programming course, such as CS16, would make a student report feeling more comfortable in programming skills.
 
-The specific questions we investigated were:
+**The specific questions we investigated were**:
 
 1.  Can we predict student comfortability/proficiency in statistics using the elective upper-division Statistics courses they have taken?
 
@@ -291,8 +291,6 @@ programming_prof_lm_fit %>%
 
 ```
 
-
 ### Links
 
 [display text](https://docs.google.com/document/d/1zITb43ZU3eKyEbSSw33kW_f1kyIorbjP1ec9sTaBS5I/edit?usp=sharing)
-
