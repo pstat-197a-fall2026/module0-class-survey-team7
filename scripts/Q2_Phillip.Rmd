@@ -61,10 +61,6 @@ data <- combined %>%
     strsplit(areas[[1]], split = ", ")[[1]]) - 
       sum(strsplit(areas[[1]], split = ", ")[[1]] == "generally"), 
     .by = areas) %>%
-  
-  # only keeps the counts of non-mandatory courses and areas of interest
-  # keeps the areas of interest
-  select(courses, num_non_mandatory, num_areas)
 
 head(data)
 ```
