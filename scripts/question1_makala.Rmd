@@ -83,7 +83,6 @@ set.seed(2026)
 comfort_split <- initial_split(class_data, prop = 0.80, strata = stat.comf)
 comfort_train <- training(comfort_split)
 comfort_test <- testing(comfort_split)
-comfort_folds <- vfold_cv(comfort_train, v = 5, strata = stat.comf)
 
 # Check counts
 nrow(comfort_train)
@@ -92,7 +91,6 @@ nrow(comfort_test)
 ```
 39 observations in the training set, 12 in the testing set!
 
-# Linear Regression Model
 ```{r}
 # Create recipe
 comfort_recipe <- recipe(stat.comf ~ pstat_115 + pstat_160 + 
@@ -109,14 +107,20 @@ comfort_wflow <- workflow() %>%
   add_model(comfort_model) %>%
   add_recipe(comfort_recipe)
 
-# Cross-Validation
-comfort_fit <- fit_resamples(comfort_wflow, resamples = comfort_folds,
-                            metrics = metric_set(rmse, rsq, mae))
+# Fit and extract metrics
+comfort_fit <- fit(comfort_wflow, comfort_train)
+
+comfort_fit %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
 ```
 
 ```{r}
-# Evaluate results
-collect_metrics(comfort_fit)
+# Evaluate RMSE and R-Squared
+comfort_fit %>%
+  predict(new_data = comfort_train) %>%
+  bind_cols(comfort_train) %>%
+  metrics(truth = stat.comf, estimate = .pred)
 ```
 
 From these metrics, we can see that our model didn't do a very good job at predicting student comfortability with statistics. The RMSE is is about 0.769. This value is pretty high, which means that the model's predicted values were far from the actual values. The R-squared value is also low, about 0.18. This means that only 18% of the variance in student comfortability can be explained by our independent variables (our classes of interest). 
@@ -133,6 +137,7 @@ proficiency_folds <- vfold_cv(proficiency_train, v = 5, strata = adv_prof)
 nrow(proficiency_train)
 nrow(proficiency_test)
 ```
+
 ```{r}
 # Create recipe
 proficiency_recipe <- recipe(adv_prof ~ pstat_115 + pstat_160 + 
@@ -149,13 +154,19 @@ proficiency_wflow <- workflow() %>%
   add_model(proficiency_model) %>%
   add_recipe(proficiency_recipe)
 
-# Cross-Validation
-proficiency_fit <- fit_resamples(proficiency_wflow, resamples = proficiency_folds,
-                            metrics = metric_set(rmse, rsq, mae))
+# Fit and extract metrics
+proficiency_fit <- fit(proficiency_wflow, proficiency_train)
+
+proficiency_fit %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
 ```
 
 ```{r}
-# Evaluate results
-collect_metrics(proficiency_fit)
+# Evaluate RMSE and R-Squared
+proficiency_fit %>%
+  predict(new_data = proficiency_train) %>%
+  bind_cols(proficiency_train) %>%
+  metrics(truth = adv_prof, estimate = .pred)
 ```
 
