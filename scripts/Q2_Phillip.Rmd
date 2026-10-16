@@ -97,6 +97,13 @@ lr <- lm(num_areas ~ num_non_mandatory, data = data)
 summary(lr)
 ```
 
+```{r}
+plot(data$num_non_mandatory, data$num_areas)
+abline(lr, col = "red")
+```
 
+```{r}
+par(mfrow =c(1,2))
 
-
+plot(lr)
+```
