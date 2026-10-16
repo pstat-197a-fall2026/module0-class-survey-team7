@@ -92,8 +92,7 @@ ggplot(joint, aes(x = num_areas)) +
 # pie chart of non-mandatory classes 
 ggplot(non_mandatory_course_count, aes(x= "", y = n, fill = reorder(courses, -n))) +
   geom_col() +
-  labs(title = "Pie Chart of Non-Mandatory Classes", fill = "Courses (Descending Order)", 
-       title = "") +
+  labs(title = "Pie Chart of Non-Mandatory Classes", fill = "Courses (Descending Order)") +
   geom_text(aes(x = 1.3, label = n),
             position = position_stack(vjust = 0.5)) +
   coord_polar(theta = "y")+
