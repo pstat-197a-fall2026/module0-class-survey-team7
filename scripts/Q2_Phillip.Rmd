@@ -107,39 +107,3 @@ par(mfrow =c(1,2))
 
 plot(lr)
 ```
-
-
-
-
-```{r}
-data
-```
-
-```{r}
-keep(strsplit(data["courses"][[1]], split = ", ")[[1]], 
-     .p = function(x) !(x %in% mandatory))
-```
-
-```{r}
-data %>% 
-  mutate(non_mandatory = sapply(strsplit(courses, split = ", ")[[1]],
-     .p = function(x) !(x %in% mandatory)), sep = ", "), .by = "courses")
-```
-
-```{r}
-paste(keep(strsplit(data["courses"][[1]][1], split = ", ")[[1]],
-     .p = function(x) !(x %in% mandatory)))
-```
-```{r}
-data["courses"][[1]][1]
-```
-
-```{r}
-data %>%
-  mutate(wtv = paste("hi", "you", sep = ", "))
-```
-
-
-
-
-
