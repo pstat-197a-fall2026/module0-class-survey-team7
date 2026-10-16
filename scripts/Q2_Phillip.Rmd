@@ -60,7 +60,7 @@ data <- combined %>%
   mutate(num_areas = length(
     strsplit(areas[[1]], split = ", ")[[1]]) - 
       sum(strsplit(areas[[1]], split = ", ")[[1]] == "generally"), 
-    .by = areas) %>%
+    .by = areas)
 
 head(data)
 ```
