@@ -1,7 +1,7 @@
 ---
 title: "Analysis of class surveys"
 subtitle: "If you want a subtitle put it here"
-author: "List names here"
+author: "Anna Calkins, Makala Mesina-Forester, Nic Chan, Phillip Phi, Lawrence Huynh"
 date: last-modified
 published-title: "Updated"
 editor: visual
@@ -19,6 +19,14 @@ Use this as a template. Keep the headers and remove all other text. Overall, you
 ```{r}
 # load any other packages and read data here
 library(tidyverse)
+library(dplyr)
+library(tidymodels)
+library(broom)
+library(dplyr)
+library(fastDummies)
+library(ggplot2)
+library(GGally)
+library(purrr)
 ```
 
 ## Executive summary
@@ -27,33 +35,37 @@ Write a one-paragraph abstract summarizing what you did and your findings. It ne
 
 ## Data description
 
-Write a brief description of the dataset. Your description should cover how data were obtained, sample characteristics, and measurements taken. It does not need to be exhaustive, but sufficiently detailed to convey a clear high-level understanding of the dataset. You can utilize bullet points or tables if you feel it would help improve clarity.
+Data was obtained from a survey offered to all students enrolled in PSTAT 197A. There were 55 total respondents. The data consists of background information on students with columns regarding courses taken, proficiency in math, statistics, and programming. It also contains demographic information on class standing, gender, and race. There is also data on interests in programming languages preferences, domain specification, and technical areas of interest. It is worth noting that at the end of the survey, students were asked to give consent on their information being used in the dataset for analysis. Forty-nine students gave consent to allow their skills, experience, and project preferences to be used in the joint dataset.
 
 ## Questions of interest
 
-Indicate the questions your analysis addresses. These should map one-to-one to your findings. Don't include questions you didn't answer or questions you started with and refined later. If you would rather frame them as goals or tasks rather than questions that is okay; just modify the header appropriately. However you frame what you've done, you may only have two or three items; that is fine. Provide an itemized or numbered list so that the reader can easily identify your objectives.
+We sought to investigate the relationships between previous courses taken and skill levels and interests. Specifically, we wanted to focus on elective courses and potential effects that they may have on students given that students chose to take said courses. For example, we wondered if taking an additional programming course, such as CS16, would make a student report feeling more comfortable in programming skills.
 
-For example:
+The specific questions we investigated were:
 
-> *We sought to understand the relationship between coursework preparation, self-assessed technical abilities, and comfort level with technical skills. We also sought to understand whether the relationships differed depending on having had prior research experience. Our analysis addressed three questions:*
->
-> 1.  *How should the coursework histories of students in the class be ordered from less preparation to extensive preparation?*
-> 2.  *Is coursework preparation associated with increased self-assessed technical skill and comfort within the sample?*
-> 3.  *Does prior research experience appear to be a substitute for coursework preparation with respect to self-assessed technical skill and comfort?*
+1.  Can we predict student comfortability/proficiency in statistics using the elective upper-division Statistics courses they have taken?
 
-Notice that the questions are precise but not overly technical.
+2.  Is there a linear relationship between reported programming comfortability/ proficiency and elective, programming-related coursework? Can we fit a linear model to it?
+
+3.  Is there a linear relationship between having taken more non-mandatory courses and having more areas of interest?
 
 ## Findings
 
 Summarize your results. Don't try to explain every step you took; focus instead on providing the main data analytic outputs -- tables and figures -- and explaining clearly what they show. Clarify any important decisions you made in obtaining them. You can display codes if you like but it is not necessary.
 
-## Useful tips (remove this section)
+### Question 1
 
-Due to the visual editor, most common needs for authoring can be met using menu items in the RStudio IDE. For a comprehensive guide to Quarto, see the [documentation](https://quarto.org/docs/guide/); consult the documentation for anything you can't sort out in the IDE.
+Fitting statistics comfortability and advanced proficiency to a linear model, using PSTAT 115, PSTAT 160, PSTAT 174, and PSTAT 175 as predictors, did not result in an accurate model. In the comfortability model, we achieved an RMSE of about 0.634, which is quite high, and an R-Squared of 0.147. These metrics do not indicate an accurate model. In addition, none of the classes were found to be statistically significant predictors.
+
+In the advanced proficiency model, we achieved a slightly better RMSE of 0.436 and an R-squared of 0.164. Additionally, none of the classes were found to be statistically significant. Again, we could not build a model that accurately predicted advanced statistical proficiency using elective upper-division PSTAT courses.
+
+### Question 2
+
+Fitting programming comfortability to a linear model, using CS5, CS9, CS16, PSTAT100, and PSTAT131 as predictors, did not result in a successful model. Across all 5 predictors, each predictor did not have a statistically significant effect on the intercept. This means that for CS5, CS9, CS16, PSTAT100, and PSTAT131, having reported taking that course did not significantly affect what the individual reported as their level of programming comfortability.
+
+Similarly, when fitting programming advanced proficiency in a linear model with the same coursework, each course did not have any statistically significant effect on whether an individual reported advanced proficiency or not. Holding all else constant, PSTAT131, CS5, and CS16 had positive coefficients, indicating that they might have higher predicted odds of advanced proficiency, but still, by looking at the p-value, each course did not have statistically significant effects.
 
 ### Code chunks
-
-Insert code chunks using the *Insert* drop-down menu or `ctrl + alt + I` . By default in this document, codes will not be shown but results will. If you want to change this behavior, add the chunk option `echo: true` as below.
 
 ```{r}
 #| echo: true
@@ -61,6 +73,222 @@ my_df <- tibble(animal = c('snake', 'gecko'),
                 threatening = c(TRUE, FALSE))
 
 my_df
+```
+
+### Question 1
+
+```{r}
+# Load data and select variables of interest
+class_data <- read_csv('../data/background-clean.csv') %>% 
+  select(stat.comf, stat.prof, courses)
+head(class_data)
+
+# Summarize class dataset
+summary(class_data)
+
+# Creating new columns corresponding to classes of interest
+class_data <- class_data %>% 
+  mutate(
+    pstat_115 = if_else(str_detect(courses, 'PSTAT 115'), 1, 0),
+    pstat_160 = if_else(str_detect(courses, 'PSTAT 160'), 1, 0),
+    pstat_174 = if_else(str_detect(courses, 'PSTAT 174'), 1, 0),
+    pstat_175 = if_else(str_detect(courses, 'PSTAT 175'), 1, 0),
+    adv_prof = if_else(str_detect(stat.prof, 'adv'), 1, 0)) %>% 
+  select(-(c(courses, stat.prof)))
+head(class_data)
+
+# Summarize class data
+class_totals <- class_data %>% summarize(across(c(pstat_115, pstat_160,
+                                                pstat_174, pstat_175), sum)) %>% 
+                pivot_longer(cols=everything(),
+                             names_to = 'course',
+                             values_to = 'total')
+  
+# Plot class totals
+class_barplot <- class_totals %>% ggplot(aes(x=course, y=total)) +
+  geom_col(fill = '#005A87') +
+  labs(title = 'Students Per Upper Division PSTAT Courses',
+       x = 'Course',
+       y = 'Total Students') +
+  theme_light()
+class_barplot
+
+# Summarize Student Comfort
+comfort_barplot <- class_data %>% ggplot(aes(x = stat.comf)) + 
+  geom_bar(fill = ('#2E6F40')) +
+  labs(title = 'Student Statistics Comfort Count',
+       x = 'Comfort',
+       y = 'Total') +
+  theme_light()
+comfort_barplot
+
+# Get totals
+comfort_totals <- class_data %>% count(stat.comf)
+comfort_totals
+
+set.seed(2026)
+# Split data
+comfort_split <- initial_split(class_data, prop = 0.80, strata = stat.comf)
+comfort_train <- training(comfort_split)
+comfort_test <- testing(comfort_split)
+
+# Check counts
+nrow(comfort_train)
+nrow(comfort_test)
+
+# Create recipe
+comfort_recipe <- recipe(stat.comf ~ pstat_115 + pstat_160 + 
+                                   pstat_174 + pstat_175, 
+                         data = comfort_train) 
+
+# Model
+comfort_model <- linear_reg() %>%
+  set_engine("lm") %>%
+  set_mode("regression")
+
+# Workflow
+comfort_wflow <- workflow() %>%
+  add_model(comfort_model) %>%
+  add_recipe(comfort_recipe)
+
+# Fit and extract metrics
+comfort_fit <- fit(comfort_wflow, comfort_train)
+
+comfort_fit %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
+
+# Evaluate RMSE and R-Squared
+comfort_fit %>%
+  predict(new_data = comfort_train) %>%
+  bind_cols(comfort_train) %>%
+  metrics(truth = stat.comf, estimate = .pred)
+
+# Split data
+proficiency_split <- initial_split(class_data, prop = 0.80, strata = adv_prof)
+proficiency_train <- training(proficiency_split)
+proficiency_test <- testing(proficiency_split)
+proficiency_folds <- vfold_cv(proficiency_train, v = 5, strata = adv_prof)
+
+# Check counts
+nrow(proficiency_train)
+nrow(proficiency_test)
+
+# Create recipe
+proficiency_recipe <- recipe(adv_prof ~ pstat_115 + pstat_160 + 
+                                   pstat_174 + pstat_175, 
+                         data = proficiency_train) 
+
+# Model
+proficiency_model <- linear_reg() %>%
+  set_engine("lm") %>%
+  set_mode("regression")
+
+# Workflow
+proficiency_wflow <- workflow() %>%
+  add_model(proficiency_model) %>%
+  add_recipe(proficiency_recipe)
+
+# Fit and extract metrics
+proficiency_fit <- fit(proficiency_wflow, proficiency_train)
+
+proficiency_fit %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
+
+# Evaluate RMSE and R-Squared
+proficiency_fit %>%
+  predict(new_data = proficiency_train) %>%
+  bind_cols(proficiency_train) %>%
+  metrics(truth = adv_prof, estimate = .pred)
+```
+
+### Question 2
+
+```{r, echo = FALSE}
+background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
+
+tibble(background)
+
+programming_classes <- background %>% 
+  mutate(
+    cs_9 = if_else(str_detect(courses, 'CS 9'),1, 0),
+    cs_5 = if_else(str_detect(courses, 'CS 5'), 1, 0),
+    cs_16 = if_else(str_detect(courses, 'CS 16'), 1, 0),
+    pstat_100 = if_else(str_detect(courses, 'PSTAT 100'), 1, 0),
+    pstat_131 = if_else(str_detect(courses, 'PSTAT 131'), 1, 0),
+    dummy_cols(programming_classes, select_columns = "prog.prof"))%>% 
+  select(-courses)
+
+programming_comf_classes <- programming_classes %>% 
+  select(prog.comf, cs_9, cs_5, cs_16, pstat_100, pstat_131)
+
+head(programming_comf_classes)
+
+
+programming_comf_classes %>% 
+  select(is.numeric) %>% 
+  cor() %>% 
+  corrplot(type = 'lower', diag = FALSE, 
+           method = 'color')
+
+
+programming_comf_split <- initial_split(programming_comf_classes, prop = 0.80)
+programming_comf_train <- training(programming_comf_split)
+programming_comf_test <- testing(programming_comf_split)
+
+
+programming_comf_recipe <- recipe(prog.comf ~ ., data = programming_comf_train) %>%
+  step_dummy(all_nominal_predictors())
+
+programming_comf_lm_model <- linear_reg() %>% 
+  set_engine("lm")
+
+programming_comf_lm_wflow <- workflow() %>% 
+  add_model(programming_comf_lm_model) %>% 
+  add_recipe(programming_comf_recipe)
+
+programming_comf_lm_fit <- fit(programming_comf_lm_wflow, programming_comf_train)
+
+programming_comf_lm_fit %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
+
+set.seed(111)
+
+programming_prof_classes <- programming_classes %>% 
+  select(prog.prof_adv, cs_9, cs_5, cs_16, pstat_100, pstat_131)
+
+head(programming_prof_classes)
+
+programming_prof_classes %>% 
+  select(is.numeric) %>% 
+  cor() %>% 
+  corrplot(type = 'lower', diag = FALSE, 
+           method = 'color')
+
+programming_prof_split <- initial_split(programming_prof_classes, prop = 0.80)
+programming_prof_train <- training(programming_prof_split)
+programming_prof_test <- testing(programming_prof_split)
+
+
+programming_prof_recipe <- recipe(prog.prof_adv ~ ., data = programming_prof_train) %>%
+  step_dummy(all_nominal_predictors())
+
+#building recipe 
+programming_prof_lm_model <- linear_reg() %>% 
+  set_engine("lm")
+
+programming_prof_lm_wflow <- workflow() %>% 
+  add_model(programming_prof_lm_model) %>% 
+  add_recipe(programming_prof_recipe)
+
+programming_prof_lm_fit <- fit(programming_prof_lm_wflow, programming_prof_train)
+
+programming_prof_lm_fit %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
+
 ```
 
 Code chunks will be executed in order when the document is rendered, so packages should be loaded at the very beginning of the document
