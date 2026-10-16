@@ -31,8 +31,46 @@ joint <- background %>%
 joint
 ```
 
+
+
+
 ```{r}
-ggplot(joint, aes(x = num_non_mandatory)) +
+
+combined <- interest %>% inner_join(background, by = "response_id")
+
+combined <- combined[c("courses", "areas")]
+
+combined
+mandatory <- c("PSTAT 120", "CS 9", "PSTAT 122", "PSTAT 126", "CS 16")
+
+data <- combined %>% 
+  
+  # separates the string containing the list of courses into each course code
+  # counts number of courses taken that were not in our list of mandatory courses
+  mutate(non_mandatory = sum(!(strsplit(courses, 
+                                split = ", ")[[1]] %in% mandatory)), 
+                                .by = "courses") %>%
+  
+  # separates the string containing the list of areas of interest by the commas
+  # counts the number of areas of interest
+  # some areas of interest have ", generally" attached to the end
+  # accidentally counts generally as an area since it comes after comma
+  # counts the number of "generally" and subtracts from the original count
+  mutate(num_areas = length(
+    strsplit(areas[[1]], split = ", ")[[1]]) - 
+      sum(strsplit(areas[[1]], split = ", ")[[1]] == "generally"), 
+    .by = areas) %>%
+  
+  # only keeps the counts of non-mandatory courses and areas of interest
+  select(non_mandatory, num_areas)
+
+head(data)
+```
+
+
+
+```{r}
+ggplot(data, aes(x = non_mandatory)) +
   geom_bar() +
   labs(x = "Number of Non-Mandatory Courses", y = "Number of People") +
   scale_x_continuous(breaks = seq(1, 13, by = 1)) +
@@ -47,29 +85,28 @@ ggplot(joint, aes(x = num_areas)) +
 
 ```{r}
 # bar plot of Number of Areas of interest
-ggplot(joint, aes(x = num_areas)) +
+ggplot(data, aes(x = num_areas)) +
   geom_bar(fill = "#003660", col = "#FEBC11") +
   labs(x = "Number of Areas of Interest", y = "Number of People Interested in X Areas") +
   scale_x_continuous(breaks = seq(1, 13, by = 1)) +
   scale_y_continuous(breaks = seq(1, 10, by = 2))
 
-# pie chart of non-mandatory classes 
-ggplot(joint, aes(x= num_non_mandatory, y = n, fill = reorder(courses, -n))) +
-  geom_col() +
-  labs(title = "Pie Chart of Non-Mandatory Classes", fill = "Courses (Descending Order)") +
-  geom_text(aes(x = 1.3, label = n),
-            position = position_stack(vjust = 0.5)) +
-  coord_polar(theta = "y")+
-  theme_void()
+ggplot(data, aes(x = num_areas, y = non_mandatory)) +
+  geom_point() +
+  geom_smooth(method = "lm")
 
-# pie chart of mandatory classes 
-ggplot(mandatory_course_count, aes(x= "", y = n, fill = reorder(courses, -n))) +
-  geom_col() +
-  labs(title = "Pie Chart of Mandatory Classes", fill = "Courses (Descending Order)") +
-  geom_text(aes(label = n),
-            position = position_stack(vjust = 0.5)) +
-  coord_polar(theta = "y") +
-  theme_void()
+
 ```
 
+```{r}
+lr <- lm(num_areas ~ non_mandatory, data = data)
+summary(lr)
+plot(lr)
+plot(lr, which = 1)
+shapiro.test(lr$residuals)
+mean(lr$residuals)
 
+
+qqnorm(lr$residuals, pch = 1, frame = FALSE)
+qqline(lr$residuals, col = "blue", lwd = 2)
+```
