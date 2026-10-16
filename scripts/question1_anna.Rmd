@@ -9,11 +9,6 @@ library(tidyverse)
 library(broom)
 library(dplyr)
 library(tidyverse)
-library(tidymodels)
-library(ggplot2)
-library(corrplot)
-library(ggthemes)
-tidymodels_prefer()
 library(fastDummies)
 
 ```
@@ -28,7 +23,7 @@ tibble(background)
 
 ### Dummy variable coding of programming classes
 
-Selected classes: CS5, CS9, PSTAT100, PSTAT131
+Selected classes: CS5, CS9, CS16, PSTAT100, PSTAT131
 
 ```{r}
 programming_classes <- background %>% 
@@ -55,14 +50,6 @@ head(programming_comf_classes)
 
 Correlation Matrix for programming classes taken and reported programming proficiency
 
-```{r}
-programming_prof_classes %>% 
-  select(is.numeric) %>% 
-  cor() %>% 
-  corrplot(type = 'lower', diag = FALSE, 
-           method = 'color')
-
-```
 
 Correlation Matrix for programming classes taken and reported programming comfortability
 
@@ -90,16 +77,6 @@ programming_comf_recipe <- recipe(prog.comf ~ ., data = programming_comf_train) 
   step_dummy(all_nominal_predictors())
 ```
 
-```{r}
-programming_prof_split <- initial_split(programming_prof_classes, prop = 0.80)
-programming_prof_train <- training(programming_prof_split)
-programming_prof_test <- testing(programming_prof_split)
-
-
-programming_prof_recipe <- recipe(prog.prof_adv ~ ., data = programming_prof_train) %>%
-  step_dummy(all_nominal_predictors())
-
-```
 
 Comfortability Model
 
@@ -119,10 +96,36 @@ programming_comf_lm_fit %>%
 
 ```
 
-From the report, we can see that the selection of classes does not do a great job at predicting an individual's level of programming comfortability.
+From the report, we can see that the selection of classes does not do a great job at predicting an individual's level of programming comfortability. Although it appears that PSTAT131 and CS5 have estimated effects on reported programming comfortability, we can see from each predictor's p-value that across the 5 courses included as predictors, there are none with statistically significant effect on the intercept. 
 
 
-Advanced Proficiency Model
+
+
+
+### Advanced Proficiency Model
+
+Correlation Matrix for programming classes taken and reported programming proficiency
+
+```{r}
+programming_prof_classes %>% 
+  select(is.numeric) %>% 
+  cor() %>% 
+  corrplot(type = 'lower', diag = FALSE, 
+           method = 'color')
+
+```
+
+
+```{r}
+programming_prof_split <- initial_split(programming_prof_classes, prop = 0.80)
+programming_prof_train <- training(programming_prof_split)
+programming_prof_test <- testing(programming_prof_split)
+
+
+programming_prof_recipe <- recipe(prog.prof_adv ~ ., data = programming_prof_train) %>%
+  step_dummy(all_nominal_predictors())
+
+```
 
 
 ```{r}
