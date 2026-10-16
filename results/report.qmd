@@ -293,11 +293,10 @@ programming_prof_lm_fit %>%
 ```{r}
 # reads background-clean data csv
 
-background <- 
-  read.csv('~/Desktop/Pstat 197A/module0-class-survey-team7/data/background-clean.csv')
+background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
 
 interest <- 
-  read.csv('~/Desktop/Pstat 197A/module0-class-survey-team7/data/interest-clean.csv')
+  read_csv('../data/interest-clean.csv', show_col_types = FALSE)
 
 
 # combines the two datasets into one data frame
@@ -331,9 +330,23 @@ data <- combined %>%
   mutate(num_areas = length(
     strsplit(areas[[1]], split = ", ")[[1]]) - 
       sum(strsplit(areas[[1]], split = ", ")[[1]] == "generally"), 
-    .by = areas) %>%
+    .by = areas) 
   
-  head(data)
+head(data)
+
+# getting count of areas of interest 
+areas_count <- data %>%
+  # separating courses by comma 
+  separate_rows(areas, sep = ",\\s*") %>%
+  
+  # creating clean course column 
+  mutate(areas = trimws(areas)) %>%
+  
+  # drop empty string 
+  filter(areas != "", areas != "generally") %>%
+  
+  # counting amount of time a course appears 
+  count(areas, name = "n") 
 
 # calculates the correlation coefficient 
 # only uses the numerical variables
@@ -354,6 +367,22 @@ abline(lr, col = "red")
 par(mfrow =c(1,2))
 
 plot(lr)
+
+# bar plot of Number of Areas of interest
+ggplot(data, aes(x = num_areas)) +
+  geom_bar(fill = "#003660", col = "#FEBC11") +
+  labs(x = "Number of Areas of Interest", y = "Number of People Interested in X Areas") +
+  scale_x_continuous(breaks = seq(1, 13, by = 1)) +
+  scale_y_continuous(breaks = seq(1, 10, by = 2))
+
+# bar plot of number of people interested in area 
+ggplot(areas_count, aes(x= reorder(areas, -n), y = n, fill = reorder(areas, -n))) +
+  geom_col() +
+  labs(x = "Areas of Interest", y = "Number of People Interested in Area", fill = "Areas of Interest",
+       title = "Number of People Interested in Areas") +
+  theme(axis.text.x.bottom = element_blank()) +
+   geom_text(aes(y = 20, label = n),
+            position = position_stack(vjust = 0.5)) 
 ```
 
 ### Links
