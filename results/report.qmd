@@ -31,7 +31,7 @@ library(purrr)
 
 ## Executive summary
 
-Write a one-paragraph abstract summarizing what you did and your findings. It need not be comprehensive; try to highlight the most important or interesting outcomes.
+Although it may seem that elective PSTAT coursework should have a correlation between programming, statistics, and breadth of interest, our various models did not show statistical significance in the correlation between any of these metrics. Programming-related elective coursework, such as CS16 and CS5, did not significantly affect estimates of programming comfortability, nor did it significantly predict advanced programming proficiency. Elective statistics coursework, such as PSTAT 115 and PSTAT 174, was also not an accurate predictor of student comfortability or advanced proficiency in statistics. While investigating the linear correlation between the number of non-mandatory classes taken and the number of areas of interest, we found no significant relationship. 
 
 ## Data description
 
