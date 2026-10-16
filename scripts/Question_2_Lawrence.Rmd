@@ -18,12 +18,28 @@ setwd('/Users/lawrencehuynh/PSTAT 197A/PSTAT174-Module0-Class-Survey-Team7')
 (interest <- 
   read.csv('data/interest-clean.csv'))
 
-# joint data from Nic 
+# list of mandatory courses
+mandatory <- c("PSTAT 120", "CS 9", "PSTAT 122", "PSTAT 126", "CS 16")
+
+# joint data from Phillip 
 joint <- background %>%
   inner_join(interest, by = "response_id") %>%
-  mutate(
-    num_areas = str_count(areas, ",") + 1L
-  )
+  
+  # separates the string containing the list of courses into each course code
+  # counts number of courses taken that were not in our list of mandatory courses
+  mutate(non_mandatory = sum(!(strsplit(courses, 
+                                split = ", ")[[1]] %in% mandatory)), 
+                                .by = "courses") %>%
+  
+  # separates the string containing the list of areas of interest by the commas
+  # counts the number of areas of interest
+  # some areas of interest have ", generally" attached to the end
+  # accidentally counts generally as an area since it comes after comma
+  # counts the number of "generally" and subtracts from the original count
+  mutate(num_areas = length(
+    strsplit(areas[[1]], split = ", ")[[1]]) - 
+      sum(strsplit(areas[[1]], split = ", ")[[1]] == "generally"), 
+    .by = areas)
 
 # getting count of specific courses
 course_count <- joint %>%
@@ -38,9 +54,6 @@ course_count <- joint %>%
   
   # counting amount of time a course appears 
   count(courses, name = "n") 
-
-# mandatory courses
-mandatory <- c("PSTAT 120", "CS 9", "PSTAT 122", "PSTAT 126")
 
 # splitting count by mandatory and non-mandatory courses
 (mandatory_course_count <- course_count %>%
@@ -71,15 +84,6 @@ ggplot(non_mandatory_course_count, aes(x= "", y = n, fill = reorder(courses, -n)
   geom_text(aes(x = 1.3, label = n),
             position = position_stack(vjust = 0.5)) +
   coord_polar(theta = "y")+
-  theme_void()
-
-# pie chart of mandatory classes 
-ggplot(mandatory_course_count, aes(x= "", y = n, fill = reorder(courses, -n))) +
-  geom_col() +
-  labs(title = "Pie Chart of Mandatory Classes", fill = "Courses (Descending Order)") +
-  geom_text(aes(label = n),
-            position = position_stack(vjust = 0.5)) +
-  coord_polar(theta = "y") +
   theme_void()
 ```
 
