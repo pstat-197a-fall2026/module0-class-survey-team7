@@ -122,12 +122,6 @@ programming_comf_lm_fit %>%
 From the report, we can see that the selection of classes does not do a great job at predicting an individual's level of programming comfortability.
 
 
-
-
-
-
-
-
 Advanced Proficiency Model
 
 
@@ -148,7 +142,7 @@ programming_prof_lm_fit %>%
 ```
 
 
-Looking at these metrics, we can see that reporting taking CS9 has a significant 
+Looking at these metrics, we can see that reporting taking CS9 has a significant
 
 
 
