@@ -1,6 +1,6 @@
 ---
-title: "Analysis of class surveys"
-subtitle: "If you want a subtitle put it here"
+title: "Analysis of Class Surveys"
+subtitle: "PSTAT197A Module 0"
 author: "Anna Calkins, Makala Mesina-Forester, Nic Chan, Phillip Phi, Lawrence Huynh"
 date: last-modified
 published-title: "Updated"
@@ -14,7 +14,6 @@ execute:
   cache: true
 ---
 
-Use this as a template. Keep the headers and remove all other text. Overall, your report may be quite short. When it is complete, render and then push changes to your team repository.
 
 ```{r}
 # load any other packages and read data here
@@ -70,9 +69,9 @@ Similarly, when fitting programming advanced proficiency in a linear model with 
 
 What we found in our research is that there is no significant correlation between the number of areas a student is interested in and the number of non-mandatory classes a student takes. Our linear regression model found no statistically significant linear relationship between number of non-mandatory classes taken and the number of areas of interest that the individual marked on the form. Based on the linear regression findings, we got a p-value of 0.364. The effect of non_mandatory indicates that non_mandatory is not a significant predictor of num_areas. Analyzing the residuals of the linear regression model, we can see that the residuals are normally distributed with a mean near zero.
 
-### Code chunks
+## Code chunks
 
-### Question 1
+### Code - Question 1
 
 ```{r}
 # Load data and select variables of interest
@@ -200,7 +199,7 @@ proficiency_fit %>%
   metrics(truth = adv_prof, estimate = .pred)
 ```
 
-### Question 2
+### Code - Question 2
 
 ```{r, echo = FALSE}
 background <- read_csv('../data/background-clean.csv', show_col_types = FALSE)
@@ -288,7 +287,7 @@ programming_prof_lm_fit %>%
 
 ```
 
-### Question 3
+### Code - Question 3
 
 ```{r}
 # reads background-clean data csv
